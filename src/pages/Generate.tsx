@@ -97,29 +97,34 @@ const Generate = () => {
 
     try {
       const formatInfo = viralFormats.find(f => f.id === selectedFormat);
-      const topic = customTopic || `general ${formatInfo?.title.toLowerCase()} content`;
+      const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
 
-      const prompt = `Based on this business information: ${systemPrompt}
+      const prompt = `You are a viral TikTok content creator expert. Based on this business: ${systemPrompt}
 
-Create a viral TikTok slideshow in the "${formatInfo?.title}" format about: ${topic}
+Create a VIRAL TikTok slideshow in the "${formatInfo?.title}" format${customTopic ? ` about: ${topic}` : ''}.
 
-Please provide:
-1. A catchy title for the slideshow
-2. 5-7 slide texts (each slide should be concise, engaging, and easy to read on mobile)
-3. 5-7 search terms for finding viral images to accompany each slide
+REQUIREMENTS:
+- Title must be EXTREMELY clickbait and viral (use power words, numbers, emojis)
+- Each slide must be SHORT, punchy, and hook-worthy 
+- Use emojis, bold text (**text**), and attention-grabbing language
+- Make people want to STOP scrolling and engage
+- Think "this will get millions of views"
+- Search terms should be relevant to finding images for YOUR specific business/niche
 
-Format your response as JSON with this structure:
+Return ONLY valid JSON in this exact format:
 {
-  "title": "catchy title here",
-  "slides": ["slide 1 text", "slide 2 text", ...],
-  "searchTerms": ["search term 1", "search term 2", ...]
+  "title": "🤯 VIRAL clickbait title with emojis and power words!",
+  "slides": [
+    "🔥 Slide 1: Short punchy hook with **bold text** #hashtag",
+    "💡 Slide 2: Mind-blowing fact that stops scrolling",
+    "⚡ Slide 3: Controversial or surprising statement",
+    "🚨 Slide 4: Problem that makes people relate",
+    "✨ Slide 5: Solution that creates urgency"
+  ],
+  "searchTerms": ["relevant visual 1", "relevant visual 2", "relevant visual 3", "relevant visual 4", "relevant visual 5"]
 }
 
-Make sure the content is:
-- Engaging and viral-worthy
-- Specific to the business/niche
-- Easy to read on mobile screens
-- Action-oriented and valuable`;
+Make it SO viral that people can't scroll past it!`;
 
       const response = await fetch('https://api.deepseek.com/chat/completions', {
         method: 'POST',
@@ -135,8 +140,8 @@ Make sure the content is:
               content: prompt
             }
           ],
-          temperature: 0.8,
-          max_tokens: 2000,
+          temperature: 0.9,
+          max_tokens: 1500,
         }),
       });
 
@@ -145,30 +150,30 @@ Make sure the content is:
       }
 
       const data = await response.json();
-      const content = data.choices[0].message.content;
+      let content = data.choices[0].message.content;
       
-      // Try to parse the JSON response
+      // Clean up the response to extract JSON
+      content = content.replace(/```json\s*|\s*```/g, '').trim();
+      
       try {
         const parsedContent = JSON.parse(content);
         setGeneratedContent({
           ...parsedContent,
           format: formatInfo?.title || selectedFormat
         });
+
+        toast({
+          title: "Viral content generated! 🔥",
+          description: "Your slideshow is ready to go viral!",
+        });
       } catch (parseError) {
-        // If JSON parsing fails, create a structured response from the text
-        const lines = content.split('\n').filter(line => line.trim());
-        setGeneratedContent({
-          title: `${formatInfo?.title} for ${topic}`,
-          slides: lines.slice(0, 6), // Take first 6 lines as slides
-          searchTerms: [`${topic} tips`, `${topic} advice`, 'viral content', 'social media', 'trending'],
-          format: formatInfo?.title || selectedFormat
+        console.error('JSON parsing failed:', parseError);
+        toast({
+          title: "Generation failed",
+          description: "Failed to parse the generated content. Please try again.",
+          variant: "destructive",
         });
       }
-
-      toast({
-        title: "Content generated successfully!",
-        description: "Your viral slideshow content is ready.",
-      });
     } catch (error) {
       console.error('Generation error:', error);
       toast({
@@ -193,7 +198,7 @@ Make sure the content is:
             </Button>
           </Link>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-            Generate Content
+            Generate Viral Content
           </h1>
         </div>
       </header>
@@ -207,11 +212,8 @@ Make sure the content is:
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
-                  Select Viral Format
+                  Choose Format
                 </CardTitle>
-                <CardDescription className="text-gray-300">
-                  Choose the type of content you want to create
-                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3">
@@ -237,22 +239,18 @@ Make sure the content is:
             {/* Custom Topic */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardHeader>
-                <CardTitle className="text-white">Custom Topic (Optional)</CardTitle>
+                <CardTitle className="text-white">Custom Topic</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Specify a particular topic or angle for your content
+                  Optional: Specify a particular angle
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div>
-                  <Label htmlFor="topic" className="text-white">Topic</Label>
-                  <Input
-                    id="topic"
-                    placeholder="e.g., morning routines, productivity hacks, budgeting..."
-                    value={customTopic}
-                    onChange={(e) => setCustomTopic(e.target.value)}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400"
-                  />
-                </div>
+                <Input
+                  placeholder="e.g., morning routines, productivity..."
+                  value={customTopic}
+                  onChange={(e) => setCustomTopic(e.target.value)}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400"
+                />
               </CardContent>
             </Card>
 
@@ -265,7 +263,7 @@ Make sure the content is:
               {isGenerating ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Generating...
+                  Creating Viral Content...
                 </>
               ) : (
                 <>
@@ -282,10 +280,10 @@ Make sure the content is:
               <ContentResult content={generatedContent} />
             ) : (
               <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
-                <CardContent className="text-center">
+                <CardContent className="text-center py-16">
                   <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
-                  <p className="text-gray-300">
-                    Select a format and click generate to create your viral content
+                  <p className="text-gray-300 text-lg">
+                    Select a format and generate viral content
                   </p>
                 </CardContent>
               </Card>
