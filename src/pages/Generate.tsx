@@ -146,11 +146,18 @@ Return ONLY valid JSON in this exact format:
 
 Make it SO valuable and viral that people can't help but engage and take action!`;
 
-      const response = await fetch('https://api.deepseek.com/chat/v1', {
+      console.log("Making API request with CORS proxy...");
+
+      // Use a CORS proxy service to bypass CORS restrictions
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      const targetUrl = 'https://api.deepseek.com/chat/v1';
+
+      const response = await fetch(proxyUrl + targetUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
           model: 'deepseek-reasoner',
@@ -165,11 +172,17 @@ Make it SO valuable and viral that people can't help but engage and take action!
         }),
       });
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log("API Response:", data);
+      
       let content = data.choices[0].message.content;
       
       // Clean up the response to extract JSON
@@ -188,6 +201,7 @@ Make it SO valuable and viral that people can't help but engage and take action!
         });
       } catch (parseError) {
         console.error('JSON parsing failed:', parseError);
+        console.error('Raw content:', content);
         toast({
           title: "Generation failed",
           description: "Failed to parse the generated content. Please try again.",
@@ -196,11 +210,19 @@ Make it SO valuable and viral that people can't help but engage and take action!
       }
     } catch (error) {
       console.error('Generation error:', error);
-      toast({
-        title: "Generation failed",
-        description: "Please check your API key and try again.",
-        variant: "destructive",
-      });
+      if (error.message.includes('CORS')) {
+        toast({
+          title: "CORS Error",
+          description: "Due to browser security, direct API calls are blocked. Please try using the demo content or set up a backend proxy.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Generation failed",
+          description: "Please check your API key and try again. If the problem persists, try again in a few moments.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -243,8 +265,8 @@ Make it SO valuable and viral that people can't help but engage and take action!
                       variant={selectedFormat === format.id ? "default" : "outline"}
                       className={`p-4 h-auto flex flex-col items-center space-y-2 transition-all duration-300 ${
                         selectedFormat === format.id
-                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg"
-                          : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white"
+                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600"
+                          : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-transparent"
                       }`}
                       onClick={() => setSelectedFormat(format.id)}
                     >
