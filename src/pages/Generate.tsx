@@ -99,32 +99,52 @@ const Generate = () => {
       const formatInfo = viralFormats.find(f => f.id === selectedFormat);
       const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
 
-      const prompt = `You are a viral TikTok content creator expert. Based on this business: ${systemPrompt}
+      const prompt = `You are a viral TikTok content creator and marketing expert. Based on this business: ${systemPrompt}
 
-Create a VIRAL TikTok slideshow in the "${formatInfo?.title}" format${customTopic ? ` about: ${topic}` : ''}.
+Create a VIRAL TikTok slideshow in the "${formatInfo?.title}" format${customTopic ? ` specifically about: ${topic}` : ''}.
 
-REQUIREMENTS:
-- Title must be EXTREMELY clickbait and viral (use power words, numbers, emojis)
-- Each slide must be SHORT, punchy, and hook-worthy 
-- Use emojis, bold text (**text**), and attention-grabbing language
-- Make people want to STOP scrolling and engage
-- Think "this will get millions of views"
-- Search terms should be relevant to finding images for YOUR specific business/niche
+CRITICAL REQUIREMENTS:
+
+1. **HOOK (Title)**: Create an IRRESISTIBLE clickbait title that makes people STOP scrolling
+   - Use power words: "SECRET", "SHOCKING", "MISTAKE", "GENIUS", "INSTANT"
+   - Include numbers and emojis strategically
+   - Create curiosity gap: "You won't believe what happens next"
+   - Make it controversial but truthful
+
+2. **ACTUAL USEFUL CONTENT**: Each slide must provide REAL, actionable value
+   - Give specific, practical tips that work
+   - Include insider knowledge from your business expertise
+   - Make each tip immediately implementable
+   - Use concrete examples, not vague advice
+
+3. **VIRAL PSYCHOLOGY**: 
+   - Start with a pattern interrupt (shocking fact/statistic)
+   - Create "aha moments" that make people screenshot
+   - Build anticipation for each next slide
+   - Use FOMO and urgency throughout
+
+4. **CALL TO ACTION (Last Slide)**: 
+   - Create urgency with limited-time offers
+   - Give a clear next step related to your business
+   - Use action words: "Download NOW", "Get instant access", "Claim your spot"
+   - Include benefit-driven language
+
+5. **Search Terms**: Must be HIGHLY specific to your niche and audience for finding relevant visuals
 
 Return ONLY valid JSON in this exact format:
 {
-  "title": "🤯 VIRAL clickbait title with emojis and power words!",
+  "title": "🚨 [NUMBER] [POWER WORD] [SPECIFIC TOPIC] SECRETS [AUTHORITY FIGURE] DON'T WANT YOU TO KNOW! 🤯",
   "slides": [
-    "🔥 Slide 1: Short punchy hook with **bold text** #hashtag",
-    "💡 Slide 2: Mind-blowing fact that stops scrolling",
-    "⚡ Slide 3: Controversial or surprising statement",
-    "🚨 Slide 4: Problem that makes people relate",
-    "✨ Slide 5: Solution that creates urgency"
+    "🔥 **STOP!** [Shocking statistic or fact] that will blow your mind! #viral",
+    "💡 **TIP 1:** [Specific actionable advice with exact steps] - this changed EVERYTHING!",
+    "⚡ **TIP 2:** [Another concrete tip with real benefit] - most people do this WRONG!",
+    "🚨 **TIP 3:** [Insider secret with specific example] - industry professionals hate this trick!",
+    "✨ **TAKE ACTION NOW!** [Clear call to action with urgency] - Link in bio for [specific benefit]! ⏰"
   ],
-  "searchTerms": ["relevant visual 1", "relevant visual 2", "relevant visual 3", "relevant visual 4", "relevant visual 5"]
+  "searchTerms": ["[niche-specific visual 1]", "[exact audience scenario 2]", "[product/service in action 3]", "[problem being solved 4]", "[success result 5]"]
 }
 
-Make it SO viral that people can't scroll past it!`;
+Make it SO valuable and viral that people can't help but engage and take action!`;
 
       const response = await fetch('https://api.deepseek.com/chat/completions', {
         method: 'POST',
@@ -133,15 +153,15 @@ Make it SO viral that people can't scroll past it!`;
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'deepseek-chat',
+          model: 'deepseek-r1',
           messages: [
             {
               role: 'user',
               content: prompt
             }
           ],
-          temperature: 0.9,
-          max_tokens: 1500,
+          temperature: 0.8,
+          max_tokens: 2000,
         }),
       });
 
@@ -221,10 +241,10 @@ Make it SO viral that people can't scroll past it!`;
                     <Button
                       key={format.id}
                       variant={selectedFormat === format.id ? "default" : "outline"}
-                      className={`p-4 h-auto flex flex-col items-center space-y-2 ${
+                      className={`p-4 h-auto flex flex-col items-center space-y-2 transition-all duration-300 ${
                         selectedFormat === format.id
-                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                          : "border-white/20 text-white hover:bg-white/10"
+                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg"
+                          : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white"
                       }`}
                       onClick={() => setSelectedFormat(format.id)}
                     >
@@ -249,7 +269,7 @@ Make it SO viral that people can't scroll past it!`;
                   placeholder="e.g., morning routines, productivity..."
                   value={customTopic}
                   onChange={(e) => setCustomTopic(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400"
+                  className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
                 />
               </CardContent>
             </Card>
@@ -258,7 +278,7 @@ Make it SO viral that people can't scroll past it!`;
             <Button
               onClick={handleGenerate}
               disabled={isGenerating || !selectedFormat}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
             >
               {isGenerating ? (
                 <>
