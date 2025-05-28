@@ -146,14 +146,14 @@ Return ONLY valid JSON in this exact format:
 
 Make it SO valuable and viral that people can't help but engage and take action!`;
 
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
+      const response = await fetch('https://api.deepseek.com/chat/v1', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'deepseek-r1',
+          model: 'deepseek-reasoner',
           messages: [
             {
               role: 'user',
