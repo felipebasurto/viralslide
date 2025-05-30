@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -139,49 +140,26 @@ async function fetchGeneratedContent(
 ): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find((f) => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
-  const prompt = `You are a viral TikTok content creator and parenting expert. Based on this business: ${systemPrompt}
+  
+  // Simplified prompt to avoid token limit issues
+  const prompt = `Create viral TikTok slideshow content in "${formatInfo?.title}" format for: ${systemPrompt}
 
-Create ORGANIC viral TikTok slideshow content in the "${formatInfo?.title}" format${customTopic ? ` specifically about: ${topic}` : ''}.
+${customTopic ? `Topic: ${topic}` : ''}
 
-CRITICAL REQUIREMENTS:
-1. **ORGANIC TONE**: Write like a real parent sharing genuine advice, NOT like an advertisement
-   - Use lowercase text throughout (except for proper nouns)
-   - NO emojis or markdown formatting
-   - Sound conversational and authentic
-   - Share real insights that parents actually need
+Requirements:
+- Organic tone, lowercase text, no emojis
+- 5 slides with real parenting value
+- Last slide: subtle call to action
+- Return only valid JSON
 
-2. **PROVIDE REAL VALUE**: Each slide must give actionable parenting advice
-   - Share specific techniques that work
-   - Give concrete examples parents can implement tonight
-   - Include insider knowledge about child psychology and sleep
-   - Make each tip immediately useful
-
-3. **VIRAL PSYCHOLOGY**: 
-   - Start with a relatable problem most parents face
-   - Build credibility with specific details and results
-   - Create "aha moments" that make people screenshot
-   - Use social proof and real scenarios
-
-4. **SUBTLE CALL TO ACTION (Last Slide Only)**: 
-   - Keep it natural and helpful, not pushy
-   - Position as a solution that supports the advice given
-   - Use benefit-focused language
-   - One slide maximum for CTA
-
-5. **Search Terms**: Highly specific to parenting and bedtime scenarios for relevant visuals
-
-Return ONLY valid JSON in this exact format:
+JSON format:
 {
-  "title": "authentic lowercase title that sounds like real parent advice",
-  "slides": [
-    "relatable problem statement that hooks parents",
-    "specific actionable tip with concrete details",
-    "another valuable tip with real examples",
-    "insider knowledge or technique most parents don't know",
-    "natural call to action positioned as helpful solution"
-  ],
-  "searchTerms": ["specific parenting scenario 1", "bedtime routine moment 2", "parent-child interaction 3", "sleep environment detail 4", "story time scene 5"]
+  "title": "authentic lowercase title",
+  "slides": ["hook slide", "tip 1", "tip 2", "insight", "call to action"],
+  "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5"]
 }`;
+
+  console.log("Sending request to Deepseek API...");
 
   const response = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
@@ -190,31 +168,63 @@ Return ONLY valid JSON in this exact format:
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "deepseek-reasoner",
+      model: "deepseek-chat", // Using regular chat model instead of reasoner
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.8,
-      max_tokens: 2000,
+      temperature: 0.7,
+      max_tokens: 1000, // Reduced token limit for more focused response
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error("API request failed:", response.status, errorText);
     throw new Error(`API request failed (${response.status}): ${errorText}`);
   }
 
   const apiResponse = await response.json();
-  const content = apiResponse.choices?.[0]?.message?.content || "";
+  console.log("API Response:", apiResponse);
   
-  // Clean up the response to extract JSON
-  const cleaned = content.replace(/```json\s*|\s*```/g, "").trim();
+  const content = apiResponse.choices?.[0]?.message?.content || "";
+  console.log("Raw content:", content);
+  
+  if (!content) {
+    throw new Error("Empty response from API");
+  }
+
+  // Enhanced JSON extraction
+  let jsonString = content;
+  
+  // Remove markdown code blocks
+  jsonString = jsonString.replace(/```json\s*|\s*```/g, "").trim();
+  
+  // Find JSON object boundaries
+  const jsonStart = jsonString.indexOf('{');
+  const jsonEnd = jsonString.lastIndexOf('}');
+  
+  if (jsonStart === -1 || jsonEnd === -1) {
+    console.error("No JSON object found in response");
+    throw new Error("No valid JSON found in response");
+  }
+  
+  jsonString = jsonString.substring(jsonStart, jsonEnd + 1);
+  console.log("Extracted JSON:", jsonString);
 
   try {
-    const parsed = JSON.parse(cleaned);
+    const parsed = JSON.parse(jsonString);
+    
+    // Validate required fields
+    if (!parsed.title || !Array.isArray(parsed.slides) || !Array.isArray(parsed.searchTerms)) {
+      console.error("Invalid JSON structure:", parsed);
+      throw new Error("Response missing required fields");
+    }
+    
     return {
       ...parsed,
       format: formatInfo?.title || formatId,
     };
   } catch (e) {
+    console.error("JSON parsing failed:", e);
+    console.error("Attempted to parse:", jsonString);
     throw new Error("Invalid JSON response from API");
   }
 }
