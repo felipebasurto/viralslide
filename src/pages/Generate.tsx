@@ -35,6 +35,80 @@ const viralFormats = [
 ];
 
 /**
+ * Demo content generator for when the API is unavailable.
+ * @param formatId - ID of the viral format
+ * @param customTopic - Optional custom topic string
+ * @returns A GeneratedContent object with placeholder data
+ */
+const getDemoContent = (formatId: string, customTopic: string): GeneratedContent => {
+  const formatInfo = viralFormats.find(f => f.id === formatId);
+  const baseContent = {
+    format: formatInfo?.title || formatId,
+    searchTerms: [
+      "parent reading bedtime story to child",
+      "children's book with personalized character",
+      "AI story generation app interface",
+      "happy child listening to custom story",
+      "family bonding with storytelling"
+    ]
+  };
+
+  switch (formatId) {
+    case "top5tips":
+      return {
+        ...baseContent,
+        title: "🚨 5 GENIUS Bedtime Story SECRETS Every Parent NEEDS to Know! 🤯",
+        slides: [
+          "🔥 **STOP!** 73% of parents struggle with bedtime stories - but this changes EVERYTHING! #parentinghacks",
+          "💡 **TIP 1:** Make YOUR child the hero of every story - watch their confidence SOAR instantly!",
+          "⚡ **TIP 2:** Use AI to create UNLIMITED personalized adventures - no more repeating the same 3 books!",
+          "🚨 **TIP 3:** Let kids choose story elements - engagement increases by 300% when they're involved!",
+          "✨ **BONUS TIP:** Stories with your child's name improve memory retention by 85% - science proves it!",
+          "🎯 **TAKE ACTION NOW!** Download our AI story app FREE - create your first personalized adventure tonight! ⏰"
+        ]
+      };
+    case "commonerrors":
+      return {
+        ...baseContent,
+        title: "🚨 5 DEADLY Bedtime Story MISTAKES That Are RUINING Your Child's Sleep! 😱",
+        slides: [
+          "🔥 **STOP!** These bedtime mistakes are keeping 89% of kids awake - are YOU guilty? #parentingfails",
+          "❌ **MISTAKE 1:** Reading the same boring stories - kids need FRESH adventures to stay engaged!",
+          "⚠️ **MISTAKE 2:** Using generic characters - YOUR child should be the superhero, not some random prince!",
+          "💥 **MISTAKE 3:** Making stories too long or short - AI can perfectly time stories for YOUR child's age!",
+          "🚨 **MISTAKE 4:** No interactive elements - kids CRAVE participation in their bedtime routine!",
+          "✅ **THE SOLUTION:** Personalized AI stories that adapt to YOUR child - try it FREE tonight! 🌟"
+        ]
+      };
+    case "beforeafter":
+      return {
+        ...baseContent,
+        title: "😴 From Bedtime BATTLES to Story MAGIC - This Changed Everything! ✨",
+        slides: [
+          "🔥 **BEFORE:** 45-minute bedtime battles, crying, 'just one more story' tantrums every single night!",
+          "😤 **THE STRUGGLE:** Same 5 books over and over, bored kids, exhausted parents - sound familiar?",
+          "💡 **THE DISCOVERY:** AI-powered stories with YOUR child as the main character!",
+          "✨ **AFTER:** Kids BEG for bedtime, fall asleep faster, dream about their own adventures!",
+          "🎯 **THE RESULT:** 15-minute bedtime routine, happy kids, peaceful evenings for parents!",
+          "🚀 **GET THIS MAGIC:** Download our story app FREE - transform bedtime tonight! ⏰"
+        ]
+      };
+    default:
+      return {
+        ...baseContent,
+        title: `🔥 ${formatInfo?.title.toUpperCase()} That Will Transform Your Parenting! 🚀`,
+        slides: [
+          "🔥 **ATTENTION PARENTS!** This viral parenting hack is changing bedtime forever!",
+          "💡 **DISCOVER:** How AI creates personalized stories with YOUR child as the hero!",
+          "⚡ **AMAZING:** Watch your child's confidence soar with custom adventures!",
+          "🌟 **BONUS:** No more 'read it again' - endless unique stories at your fingertips!",
+          "🎯 **ACT NOW:** Try our AI story generator FREE - your child will thank you! ⏰"
+        ]
+      };
+  }
+};
+
+/**
  * Call Deepseek API to generate viral TikTok slideshow content.
  * @param apiKey - Bearer token for authentication
  * @param systemPrompt - Business context prompt from settings
@@ -56,31 +130,26 @@ async function fetchGeneratedContent(
 Create a VIRAL TikTok slideshow in the "${formatInfo?.title}" format${customTopic ? ` specifically about: ${topic}` : ''}.
 
 CRITICAL REQUIREMENTS:
-
 1. **HOOK (Title)**: Create an IRRESISTIBLE clickbait title that makes people STOP scrolling
    - Use power words: "SECRET", "SHOCKING", "MISTAKE", "GENIUS", "INSTANT"
    - Include numbers and emojis strategically
    - Create curiosity gap: "You won't believe what happens next"
    - Make it controversial but truthful
-
 2. **ACTUAL USEFUL CONTENT**: Each slide must provide REAL, actionable value
    - Give specific, practical tips that work
    - Include insider knowledge from your business expertise
    - Make each tip immediately implementable
    - Use concrete examples, not vague advice
-
 3. **VIRAL PSYCHOLOGY**: 
    - Start with a pattern interrupt (shocking fact/statistic)
    - Create "aha moments" that make people screenshot
    - Build anticipation for each next slide
    - Use FOMO and urgency throughout
-
 4. **CALL TO ACTION (Last Slide)**: 
    - Create urgency with limited-time offers
    - Give a clear next step related to your business
    - Use action words: "Download NOW", "Get instant access", "Claim your spot"
    - Include benefit-driven language
-
 5. **Search Terms**: Must be HIGHLY specific to your niche and audience for finding relevant visuals
 
 Return ONLY valid JSON in this exact format:
@@ -98,7 +167,7 @@ Return ONLY valid JSON in this exact format:
 
   const response = await fetch("/api/deepseek/chat/v1", {
     method: "POST",
-    mode: "cors", // Ensure CORS mode is enabled
+    mode: "cors",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
@@ -117,13 +186,17 @@ Return ONLY valid JSON in this exact format:
   }
 
   const raw = await response.text();
-  // Strip triple-backticks if present
   const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
-  const parsed = JSON.parse(cleaned);
-  return {
-    ...parsed,
-    format: formatInfo?.title || formatId,
-  };
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    return {
+      ...parsed,
+      format: formatInfo?.title || formatId,
+    };
+  } catch (e) {
+    throw new Error("Invalid JSON response from API");
+  }
 }
 
 const Generate = () => {
@@ -146,16 +219,20 @@ const Generate = () => {
     const apiKey = localStorage.getItem("deepseek_api_key") || "";
     const systemPrompt = localStorage.getItem("system_prompt") || "";
 
+    setIsGenerating(true);
+
+    // Fallback to demo content if no API key or system prompt
     if (!apiKey || !systemPrompt) {
+      const demo = getDemoContent(selectedFormat, customTopic);
+      setGeneratedContent(demo);
       toast({
-        title: "Missing Configuration",
-        description: "Please set your API key and system prompt in settings.",
-        variant: "destructive",
+        title: "Demo content generated! 🎬",
+        description: "Using demo content. Add your API key in settings for personalized results.",
       });
+      setIsGenerating(false);
       return;
     }
 
-    setIsGenerating(true);
     try {
       const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic);
       setGeneratedContent(content);
@@ -163,12 +240,14 @@ const Generate = () => {
         title: "Viral content generated! 🔥",
         description: "Your slideshow is ready to go viral!",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Generation error:", error);
+      // Fallback to demo if API call or parsing fails
+      const demo = getDemoContent(selectedFormat, customTopic);
+      setGeneratedContent(demo);
       toast({
-        title: "Error Generating Content",
-        description: error.message,
-        variant: "destructive",
+        title: "Demo content generated! 🎬",
+        description: "API unavailable or returned invalid JSON. Using demo content instead.",
       });
     } finally {
       setIsGenerating(false);
