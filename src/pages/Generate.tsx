@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -165,9 +166,8 @@ Return ONLY valid JSON in this exact format:
   "searchTerms": ["[niche-specific visual 1]", "[exact audience scenario 2]", "[product/service in action 3]", "[problem being solved 4]", "[success result 5]"]
 }`;
 
-  const response = await fetch("/api/deepseek/chat/v1", {
+  const response = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
-    mode: "cors",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
@@ -185,8 +185,11 @@ Return ONLY valid JSON in this exact format:
     throw new Error(`API request failed (${response.status}): ${errorText}`);
   }
 
-  const raw = await response.text();
-  const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
+  const apiResponse = await response.json();
+  const content = apiResponse.choices?.[0]?.message?.content || "";
+  
+  // Clean up the response to extract JSON
+  const cleaned = content.replace(/```json\s*|\s*```/g, "").trim();
 
   try {
     const parsed = JSON.parse(cleaned);
