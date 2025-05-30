@@ -2,171 +2,56 @@ import { useState } from "react";
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ContentResult } from "@/components/ContentResult";
 
 interface GeneratedContent {
+  /** The clickbait-style title / hook for the slideshow */
   title: string;
+  /** Array of slide strings with markdown for styling and emojis */
   slides: string[];
+  /** Recommended search terms for sourcing visuals */
   searchTerms: string[];
+  /** The human-readable format name (e.g. "Top 5 Tips") */
   format: string;
 }
 
 const viralFormats = [
-  {
-    id: "top5tips",
-    title: "Top 5 Tips",
-    description: "Share your best 5 tips about your niche",
-    emoji: "🔥"
-  },
-  {
-    id: "commonerrors",
-    title: "Common Errors",
-    description: "Highlight mistakes people make in your field",
-    emoji: "⚠️"
-  },
-  {
-    id: "recommendations",
-    title: "Recommendations",
-    description: "Recommend tools, products, or strategies",
-    emoji: "⭐"
-  },
-  {
-    id: "beforeafter",
-    title: "Before vs After",
-    description: "Show transformation or improvement",
-    emoji: "✨"
-  },
-  {
-    id: "myths",
-    title: "Myths vs Facts",
-    description: "Debunk common misconceptions",
-    emoji: "💡"
-  },
-  {
-    id: "beginner",
-    title: "Beginner's Guide",
-    description: "Essential steps for newcomers",
-    emoji: "🎯"
-  }
+  { id: "top5tips", title: "Top 5 Tips", description: "Share your best 5 tips about your niche", emoji: "🔥" },
+  { id: "commonerrors", title: "Common Errors", description: "Highlight mistakes people make in your field", emoji: "⚠️" },
+  { id: "recommendations", title: "Recommendations", description: "Recommend tools, products, or strategies", emoji: "⭐" },
+  { id: "beforeafter", title: "Before vs After", description: "Show transformation or improvement", emoji: "✨" },
+  { id: "myths", title: "Myths vs Facts", description: "Debunk common misconceptions", emoji: "💡" },
+  { id: "beginner", title: "Beginner's Guide", description: "Essential steps for newcomers", emoji: "🎯" },
 ];
 
-// Demo content for when API is unavailable
-const getDemoContent = (formatId: string, customTopic: string): GeneratedContent => {
-  const formatInfo = viralFormats.find(f => f.id === formatId);
-  const baseContent = {
-    format: formatInfo?.title || formatId,
-    searchTerms: [
-      "parent reading bedtime story to child",
-      "children's book with personalized character",
-      "AI story generation app interface",
-      "happy child listening to custom story",
-      "family bonding with storytelling"
-    ]
-  };
-
-  switch (formatId) {
-    case "top5tips":
-      return {
-        ...baseContent,
-        title: "🚨 5 GENIUS Bedtime Story SECRETS Every Parent NEEDS to Know! 🤯",
-        slides: [
-          "🔥 **STOP!** 73% of parents struggle with bedtime stories - but this changes EVERYTHING! #parentinghacks",
-          "💡 **TIP 1:** Make YOUR child the hero of every story - watch their confidence SOAR instantly!",
-          "⚡ **TIP 2:** Use AI to create UNLIMITED personalized adventures - no more repeating the same 3 books!",
-          "🚨 **TIP 3:** Let kids choose story elements - engagement increases by 300% when they're involved!",
-          "✨ **BONUS TIP:** Stories with your child's name improve memory retention by 85% - science proves it!",
-          "🎯 **TAKE ACTION NOW!** Download our AI story app FREE - create your first personalized adventure tonight! ⏰"
-        ]
-      };
-
-    case "commonerrors":
-      return {
-        ...baseContent,
-        title: "🚨 5 DEADLY Bedtime Story MISTAKES That Are RUINING Your Child's Sleep! 😱",
-        slides: [
-          "🔥 **STOP!** These bedtime mistakes are keeping 89% of kids awake - are YOU guilty? #parentingfails",
-          "❌ **MISTAKE 1:** Reading the same boring stories - kids need FRESH adventures to stay engaged!",
-          "⚠️ **MISTAKE 2:** Using generic characters - YOUR child should be the superhero, not some random prince!",
-          "💥 **MISTAKE 3:** Making stories too long or short - AI can perfectly time stories for YOUR child's age!",
-          "🚨 **MISTAKE 4:** No interactive elements - kids CRAVE participation in their bedtime routine!",
-          "✅ **THE SOLUTION:** Personalized AI stories that adapt to YOUR child - try it FREE tonight! 🌟"
-        ]
-      };
-
-    case "beforeafter":
-      return {
-        ...baseContent,
-        title: "😴 From Bedtime BATTLES to Story MAGIC - This Changed Everything! ✨",
-        slides: [
-          "🔥 **BEFORE:** 45-minute bedtime battles, crying, 'just one more story' tantrums every single night!",
-          "😤 **THE STRUGGLE:** Same 5 books over and over, bored kids, exhausted parents - sound familiar?",
-          "💡 **THE DISCOVERY:** AI-powered stories with YOUR child as the main character!",
-          "✨ **AFTER:** Kids BEG for bedtime, fall asleep faster, dream about their own adventures!",
-          "🎯 **THE RESULT:** 15-minute bedtime routine, happy kids, peaceful evenings for parents!",
-          "🚀 **GET THIS MAGIC:** Download our story app FREE - transform bedtime tonight! ⏰"
-        ]
-      };
-
-    default:
-      return {
-        ...baseContent,
-        title: `🔥 ${formatInfo?.title.toUpperCase()} That Will Transform Your Parenting! 🚀`,
-        slides: [
-          "🔥 **ATTENTION PARENTS!** This viral parenting hack is changing bedtime forever!",
-          "💡 **DISCOVER:** How AI creates personalized stories with YOUR child as the hero!",
-          "⚡ **AMAZING:** Watch your child's confidence soar with custom adventures!",
-          "🌟 **BONUS:** No more 'read it again' - endless unique stories at your fingertips!",
-          "🎯 **ACT NOW:** Try our AI story generator FREE - your child will thank you! ⏰"
-        ]
-      };
-  }
-};
-
-const Generate = () => {
-  const [selectedFormat, setSelectedFormat] = useState("");
-  const [customTopic, setCustomTopic] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
-  const { toast } = useToast();
-
-  const handleGenerate = async () => {
-    const apiKey = localStorage.getItem("deepseek_api_key");
-    const systemPrompt = localStorage.getItem("system_prompt");
-
-    if (!selectedFormat) {
-      toast({
-        title: "Format Required",
-        description: "Please select a viral format to generate content.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-
-    // If no API key, use demo content
-    if (!apiKey || !systemPrompt) {
-      setTimeout(() => {
-        const demoContent = getDemoContent(selectedFormat, customTopic);
-        setGeneratedContent(demoContent);
-        setIsGenerating(false);
-        toast({
-          title: "Demo content generated! 🎬",
-          description: "Using demo content. Add your API key in settings for personalized results.",
-        });
-      }, 2000); // Simulate API delay
-      return;
-    }
-
-    try {
-      const formatInfo = viralFormats.find(f => f.id === selectedFormat);
-      const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
-
-      const prompt = `You are a viral TikTok content creator and marketing expert. Based on this business: ${systemPrompt}
+/**
+ * Call Deepseek API to generate viral TikTok slideshow content.
+ * @param apiKey - Bearer token for authentication
+ * @param systemPrompt - Business context prompt from settings
+ * @param formatId - One of the `viralFormats` IDs
+ * @param customTopic - Optional custom topic string
+ * @returns Parsed `GeneratedContent`
+ * @throws When fetch fails or response isn't valid JSON
+ */
+async function fetchGeneratedContent(
+  apiKey: string,
+  systemPrompt: string,
+  formatId: string,
+  customTopic: string
+): Promise<GeneratedContent> {
+  const formatInfo = viralFormats.find((f) => f.id === formatId);
+  const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
+  const prompt = `You are a viral TikTok content creator and marketing expert. Based on this business: ${systemPrompt}
 
 Create a VIRAL TikTok slideshow in the "${formatInfo?.title}" format${customTopic ? ` specifically about: ${topic}` : ''}.
 
@@ -209,75 +94,81 @@ Return ONLY valid JSON in this exact format:
     "✨ **TAKE ACTION NOW!** [Clear call to action with urgency] - Link in bio for [specific benefit]! ⏰"
   ],
   "searchTerms": ["[niche-specific visual 1]", "[exact audience scenario 2]", "[product/service in action 3]", "[problem being solved 4]", "[success result 5]"]
+}`;
+
+  const response = await fetch("/api/deepseek/chat/v1", {
+    method: "POST",
+    mode: "cors", // Ensure CORS mode is enabled
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "deepseek-reasoner",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 2000,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`API request failed (${response.status}): ${errorText}`);
+  }
+
+  const raw = await response.text();
+  // Strip triple-backticks if present
+  const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
+  const parsed = JSON.parse(cleaned);
+  return {
+    ...parsed,
+    format: formatInfo?.title || formatId,
+  };
 }
 
-Make it SO valuable and viral that people can't help but engage and take action!`;
+const Generate = () => {
+  const [selectedFormat, setSelectedFormat] = useState<string>("");
+  const [customTopic, setCustomTopic] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
+  const { toast } = useToast();
 
-      console.log("Attempting direct API call...");
-
-      // Try direct API call first
-      const response = await fetch('https://api.deepseek.com/chat/v1', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'deepseek-reasoner',
-          messages: [
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          temperature: 0.8,
-          max_tokens: 2000,
-        }),
-      });
-
-      console.log("Response status:", response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API Error:", response.status, errorText);
-        throw new Error(`API request failed: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log("API Response:", data);
-      
-      let content = data.choices[0].message.content;
-      
-      // Clean up the response to extract JSON
-      content = content.replace(/```json\s*|\s*```/g, '').trim();
-      
-      try {
-        const parsedContent = JSON.parse(content);
-        setGeneratedContent({
-          ...parsedContent,
-          format: formatInfo?.title || selectedFormat
-        });
-
-        toast({
-          title: "Viral content generated! 🔥",
-          description: "Your slideshow is ready to go viral!",
-        });
-      } catch (parseError) {
-        console.error('JSON parsing failed:', parseError);
-        console.error('Raw content:', content);
-        throw new Error('Failed to parse API response');
-      }
-    } catch (error) {
-      console.error('Generation error:', error);
-      
-      // If API fails due to CORS or any other reason, use demo content
-      console.log("API failed, using demo content...");
-      const demoContent = getDemoContent(selectedFormat, customTopic);
-      setGeneratedContent(demoContent);
-      
+  const handleGenerate = async () => {
+    if (!selectedFormat) {
       toast({
-        title: "Demo content generated! 🎬",
-        description: "API unavailable due to browser restrictions. Using high-quality demo content instead.",
+        title: "Format Required",
+        description: "Please select a viral format to generate content.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const apiKey = localStorage.getItem("deepseek_api_key") || "";
+    const systemPrompt = localStorage.getItem("system_prompt") || "";
+
+    if (!apiKey || !systemPrompt) {
+      toast({
+        title: "Missing Configuration",
+        description: "Please set your API key and system prompt in settings.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic);
+      setGeneratedContent(content);
+      toast({
+        title: "Viral content generated! 🔥",
+        description: "Your slideshow is ready to go viral!",
+      });
+    } catch (error: any) {
+      console.error("Generation error:", error);
+      toast({
+        title: "Error Generating Content",
+        description: error.message,
+        variant: "destructive",
       });
     } finally {
       setIsGenerating(false);
@@ -290,7 +181,11 @@ Make it SO valuable and viral that people can't help but engage and take action!
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-300">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-300"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
