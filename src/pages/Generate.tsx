@@ -25,8 +25,12 @@ import { ContentResult } from "@/components/ContentResult";
 interface GeneratedContent {
   /** The clickbait-style title / hook for the slideshow */
   title: string;
-  /** Array of slide strings with markdown for styling and emojis */
+  /** The main viral hook - first slide */
+  hook: string;
+  /** Array of 5 content slide strings with markdown for styling and emojis */
   slides: string[];
+  /** Call-to-action slide - last slide */
+  cta: string;
   /** Recommended search terms for sourcing visuals */
   searchTerms: string[];
   /** The human-readable format name (e.g. "Top 5 Tips") */
@@ -49,10 +53,6 @@ const languages = [
 
 /**
  * Demo content generator for when the API is unavailable.
- * @param formatId - ID of the viral format
- * @param customTopic - Optional custom topic string
- * @param language - Language code (en/es)
- * @returns A GeneratedContent object with placeholder data
  */
 const getDemoContent = (formatId: string, customTopic: string, language: string): GeneratedContent => {
   const formatInfo = viralFormats.find(f => f.id === formatId);
@@ -65,7 +65,9 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         "libro infantil personalizado",
         "app de cuentos con inteligencia artificial",
         "niño feliz escuchando cuento personalizado",
-        "familia unida contando historias"
+        "familia unida contando historias",
+        "niño durmiendo pacíficamente",
+        "padres relajados después del cuento"
       ]
     };
 
@@ -74,32 +76,34 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         return {
           ...baseContent,
           title: "5 secretos para que tu hijo se duerma en minutos",
+          hook: "¿sabías que hay una forma de hacer que tu hijo se duerma en menos de 15 minutos cada noche?",
           slides: [
-            "la mayoría de padres comete este error y después se pregunta por qué sus hijos no duermen",
             "consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe",
             "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro",
             "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío",
             "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente",
-            "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
-          ]
+            "consejo 5: mantén la historia entre 5-10 minutos máximo para evitar sobreestimulación"
+          ],
+          cta: "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
         };
       default:
         return {
           ...baseContent,
           title: "la rutina nocturna que cambió todo para nosotros",
+          hook: "deja de desplazarte si quieres descubrir cómo transformamos el caos nocturno en tiempo familiar pacífico",
           slides: [
-            "este simple cambio transformó nuestro caótico momento de dormir en tiempo familiar pacífico",
-            "en lugar de pelear por qué libro leer, creamos nuevas historias juntos",
-            "a los niños les encanta ser el héroe de su propia aventura cada noche",
-            "a los padres les encanta enseñar valores a través de historias personalizadas",
-            "no más rabietas de 'léelo otra vez' porque cada historia es única y especial",
-            "prueba nuestro generador gratuito - crea cuentos personalizados en segundos"
-          ]
+            "antes: peleas por qué libro leer, rabietas constantes, dormir tomaba 2 horas",
+            "el cambio: empezamos a crear nuevas historias juntos cada noche",
+            "a los niños les encanta ser el héroe de su propia aventura personalizada",
+            "a los padres les encanta enseñar valores a través de historias únicas",
+            "resultado: no más 'léelo otra vez' porque cada historia es especial y nueva"
+          ],
+          cta: "prueba nuestro generador gratuito - crea cuentos personalizados en segundos"
         };
     }
   }
 
-  // English content with real value
+  // English content
   const baseContent = {
     format: formatInfo?.title || formatId,
     searchTerms: [
@@ -107,7 +111,9 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
       "children's book with personalized character",
       "child psychology research about sleep",
       "happy child listening to custom story",
-      "family bonding with storytelling"
+      "family bonding with storytelling",
+      "peaceful child sleeping",
+      "relaxed parents after bedtime"
     ]
   };
 
@@ -116,53 +122,49 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
       return {
         ...baseContent,
         title: "5 psychology-backed bedtime tips that actually work",
+        hook: "what if I told you there's a simple way to get your child to sleep in under 15 minutes every night?",
         slides: [
-          "child psychologists studied 500 families and found one common mistake that ruins bedtime",
-          "tip 1: create a consistent 'sleep signal' - use the same opening phrase every night to trigger calm mode",
-          "tip 2: give them control within boundaries - let them choose the setting or one character trait",
-          "tip 3: use their name as the hero - research shows kids focus 3x longer when they're the protagonist",
-          "tip 4: end with a 'sleepy resolution' - always have the main character wind down and rest peacefully",
-          "bonus: try personalized ai-generated stories that incorporate these techniques automatically"
-        ]
+          "tip 1: make them the hero - research shows kids focus 3x longer when they're the protagonist",
+          "tip 2: use the same opening phrase every night to trigger their brain's sleep mode",
+          "tip 3: give them control within boundaries - let them choose the setting or one character trait", 
+          "tip 4: always end with a 'sleepy resolution' where the main character winds down peacefully",
+          "tip 5: keep stories 5-10 minutes max to avoid overstimulation before sleep"
+        ],
+        cta: "try our free ai story generator - create personalized bedtime stories in seconds"
       };
     case "commonerrors":
       return {
         ...baseContent,
         title: "bedtime mistakes that keep kids awake (backed by sleep research)",
+        hook: "stop scrolling - you need to see this if you're struggling with bedtime routines",
         slides: [
-          "sleep researchers identified these 4 mistakes in 80% of struggling families",
           "mistake 1: exciting plots before bed - action stories increase cortisol and delay sleep by 45 minutes",
           "mistake 2: inconsistent routine - your child's brain needs the same sequence to release melatonin",
           "mistake 3: generic characters - kids disconnect when they can't relate to the protagonist",
-          "mistake 4: bright screens during story time - blue light blocks melatonin production for 2 hours",
-          "solution: try stories with calming themes where your child is the sleepy hero"
-        ]
+          "mistake 4: bright screens during story time - blue light blocks melatonin for 2 hours",
+          "the fix: calming stories where your child is the sleepy hero learning to love bedtime"
+        ],
+        cta: "try stories with personalized characters that teach healthy sleep habits"
       };
     default:
       return {
         ...baseContent,
         title: "how we cut bedtime from 2 hours to 15 minutes (real parent story)",
+        hook: "imagine if you could transform your chaotic bedtime into peaceful family time in just 2 weeks",
         slides: [
           "before: tantrums, 'just one more story', getting out of bed 10 times every night",
-          "the breakthrough: child development experts say kids need to see themselves succeeding at sleep",
-          "we started telling stories where she was the main character learning to love bedtime",
+          "the breakthrough: child experts say kids need to see themselves succeeding at sleep",
+          "we started telling stories where she was the hero learning to love bedtime",
           "after 2 weeks: she asks to go to bed and falls asleep during the story",
-          "the science: when kids are the hero, they internalize the positive sleep behaviors",
-          "try creating stories where your child is the protagonist who loves going to sleep"
-        ]
+          "the science: when kids are the protagonist, they internalize positive sleep behaviors"
+        ],
+        cta: "create stories where your child is the hero who loves going to sleep"
       };
   }
 };
 
 /**
  * Call Deepseek API to generate viral TikTok slideshow content.
- * @param apiKey - Bearer token for authentication
- * @param systemPrompt - Business context prompt from settings
- * @param formatId - One of the `viralFormats` IDs
- * @param customTopic - Optional custom topic string
- * @param language - Language code (en/es)
- * @returns Parsed `GeneratedContent`
- * @throws When fetch fails or response isn't valid JSON
  */
 async function fetchGeneratedContent(
   apiKey: string,
@@ -178,33 +180,59 @@ async function fetchGeneratedContent(
     ? "Respond in Spanish. All content should be in Spanish."
     : "Respond in English. All content should be in English.";
   
-  // Value-first prompt focused on providing real insights
+  const viralHooksExamples = language === "es" ? `
+EXAMPLES OF VIRAL HOOKS (use as inspiration):
+- "¿sabías que hay una forma sencilla de conseguir [RESULTADO]?"
+- "deja de desplazarte si quieres descubrir [SECRETO]"
+- "¿y si te dijera que [RESULTADO] está a un solo paso?"
+- "¿por qué nadie habla de [TEMA]?"
+- "imagina que pudieras [RESULTADO DESEADO]"
+- "esto cambiará tu forma de ver [TEMA]"
+- "todo lo que sabías sobre [TEMA] es 100% erróneo"
+- "¿te has preguntado alguna vez por qué [PROBLEMA]?"
+- "nadie te lo ha dicho todavía pero [VERDAD]"
+- "¿estás cansado de [PROBLEMA]? entonces prueba esto"
+` : `
+EXAMPLES OF VIRAL HOOKS (use as inspiration):
+- "what if I told you there's a simple way to achieve [RESULT]?"
+- "stop scrolling if you want to discover [SECRET]"
+- "imagine if you could [DESIRED OUTCOME]"
+- "why does nobody talk about [TOPIC]?"
+- "this will change how you see [TOPIC]"
+- "everything you knew about [TOPIC] is 100% wrong"
+- "have you ever wondered why [PROBLEM]?"
+- "nobody told you this yet but [TRUTH]"
+- "are you tired of [PROBLEM]? then try this"
+- "here's why 99% of [AUDIENCE] fail at [TOPIC]"
+`;
+
   const prompt = `Create viral TikTok slideshow content in "${formatInfo?.title}" format for: ${systemPrompt}
 
 ${customTopic ? `Topic: ${topic}` : ''}
 
 ${languageInstruction}
 
-CRITICAL: Focus on providing REAL VALUE first. This is educational content that happens to mention a product at the end.
+${viralHooksExamples}
 
-Requirements:
-- First 4-5 slides: Genuine, actionable advice that parents can use immediately
-- Include real insights, research-backed tips, or relatable parent experiences
-- Last slide only: Subtle mention of the product as a helpful tool
+STRUCTURE REQUIRED:
+1. HOOK (slide 1): The most viral, attention-grabbing opening possible. This is CRITICAL for success.
+2. CONTENT SLIDES (slides 2-6): 5 slides of genuine, actionable value
+3. CTA (slide 7): Subtle product mention as helpful tool
+
+CRITICAL REQUIREMENTS:
+- HOOK must be scroll-stopping, use psychological triggers from the examples
+- Focus on providing REAL VALUE in content slides
 - Organic tone, lowercase text, no emojis or markdown
-- Make it educational and valuable, not promotional
-
-Example value-first approach:
-- Share actual parenting psychology
-- Give specific, actionable steps
-- Include relatable parent struggles
-- Provide immediate solutions they can try tonight
+- Educational first, promotional last
+- Make the hook irresistible and curiosity-driven
 
 JSON format:
 {
   "title": "authentic lowercase title that promises real value",
-  "slides": ["value slide 1", "value slide 2", "value slide 3", "value slide 4", "subtle product mention"],
-  "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5"]
+  "hook": "viral hook that stops scrolling immediately",
+  "slides": ["value slide 1", "value slide 2", "value slide 3", "value slide 4", "value slide 5"],
+  "cta": "subtle product mention as helpful solution",
+  "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
 }`;
 
   console.log("Sending request to Deepseek API...");
@@ -219,7 +247,7 @@ JSON format:
       model: "deepseek-chat",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      max_tokens: 1000,
+      max_tokens: 1200,
     }),
   });
 
@@ -241,11 +269,8 @@ JSON format:
 
   // Enhanced JSON extraction
   let jsonString = content;
-  
-  // Remove markdown code blocks
   jsonString = jsonString.replace(/```json\s*|\s*```/g, "").trim();
   
-  // Find JSON object boundaries
   const jsonStart = jsonString.indexOf('{');
   const jsonEnd = jsonString.lastIndexOf('}');
   
@@ -260,10 +285,10 @@ JSON format:
   try {
     const parsed = JSON.parse(jsonString);
     
-    // Validate required fields
-    if (!parsed.title || !Array.isArray(parsed.slides) || !Array.isArray(parsed.searchTerms)) {
+    // Validate required fields for new structure
+    if (!parsed.title || !parsed.hook || !Array.isArray(parsed.slides) || !parsed.cta || !Array.isArray(parsed.searchTerms)) {
       console.error("Invalid JSON structure:", parsed);
-      throw new Error("Response missing required fields");
+      throw new Error("Response missing required fields (title, hook, slides, cta, searchTerms)");
     }
     
     return {
@@ -317,7 +342,7 @@ const Generate = () => {
       setGeneratedContent(content);
       toast({
         title: "Viral content generated! 🔥",
-        description: "Your slideshow is ready to go viral!",
+        description: "Your slideshow with viral hook is ready to go viral!",
       });
     } catch (error) {
       console.error("Generation error:", error);
