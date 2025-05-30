@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -58,52 +57,66 @@ const getDemoContent = (formatId: string, customTopic: string): GeneratedContent
     case "top5tips":
       return {
         ...baseContent,
-        title: "🚨 5 GENIUS Bedtime Story SECRETS Every Parent NEEDS to Know! 🤯",
+        title: "5 bedtime story secrets that actually work",
         slides: [
-          "🔥 **STOP!** 73% of parents struggle with bedtime stories - but this changes EVERYTHING! #parentinghacks",
-          "💡 **TIP 1:** Make YOUR child the hero of every story - watch their confidence SOAR instantly!",
-          "⚡ **TIP 2:** Use AI to create UNLIMITED personalized adventures - no more repeating the same 3 books!",
-          "🚨 **TIP 3:** Let kids choose story elements - engagement increases by 300% when they're involved!",
-          "✨ **BONUS TIP:** Stories with your child's name improve memory retention by 85% - science proves it!",
-          "🎯 **TAKE ACTION NOW!** Download our AI story app FREE - create your first personalized adventure tonight! ⏰"
+          "most parents make the same bedtime mistake and wonder why kids won't sleep",
+          "tip 1: make your child the main character in every story - they listen 3x longer when they're the hero",
+          "tip 2: use the same opening phrase every night to signal sleep time - consistency trains their brain",
+          "tip 3: let them choose one story element - the setting, the sidekick, or the challenge",
+          "tip 4: end every story with a calm resolution where the hero goes to sleep peacefully",
+          "try our free ai story generator - creates personalized bedtime stories in seconds"
         ]
       };
     case "commonerrors":
       return {
         ...baseContent,
-        title: "🚨 5 DEADLY Bedtime Story MISTAKES That Are RUINING Your Child's Sleep! 😱",
+        title: "bedtime mistakes keeping your kids awake",
         slides: [
-          "🔥 **STOP!** These bedtime mistakes are keeping 89% of kids awake - are YOU guilty? #parentingfails",
-          "❌ **MISTAKE 1:** Reading the same boring stories - kids need FRESH adventures to stay engaged!",
-          "⚠️ **MISTAKE 2:** Using generic characters - YOUR child should be the superhero, not some random prince!",
-          "💥 **MISTAKE 3:** Making stories too long or short - AI can perfectly time stories for YOUR child's age!",
-          "🚨 **MISTAKE 4:** No interactive elements - kids CRAVE participation in their bedtime routine!",
-          "✅ **THE SOLUTION:** Personalized AI stories that adapt to YOUR child - try it FREE tonight! 🌟"
+          "if your child fights bedtime every night, you might be making these common mistakes",
+          "mistake 1: reading the same 3 books over and over - kids get bored and resist",
+          "mistake 2: stories that are too exciting - action and adventure wake them up instead of calming down",
+          "mistake 3: no consistent routine - their brain doesn't know it's time to wind down",
+          "mistake 4: generic characters they can't connect with - personalization makes all the difference",
+          "get personalized bedtime stories that avoid all these mistakes - link in bio"
         ]
       };
     case "beforeafter":
       return {
         ...baseContent,
-        title: "😴 From Bedtime BATTLES to Story MAGIC - This Changed Everything! ✨",
+        title: "how we went from 2 hour bedtime battles to 15 minutes",
         slides: [
-          "🔥 **BEFORE:** 45-minute bedtime battles, crying, 'just one more story' tantrums every single night!",
-          "😤 **THE STRUGGLE:** Same 5 books over and over, bored kids, exhausted parents - sound familiar?",
-          "💡 **THE DISCOVERY:** AI-powered stories with YOUR child as the main character!",
-          "✨ **AFTER:** Kids BEG for bedtime, fall asleep faster, dream about their own adventures!",
-          "🎯 **THE RESULT:** 15-minute bedtime routine, happy kids, peaceful evenings for parents!",
-          "🚀 **GET THIS MAGIC:** Download our story app FREE - transform bedtime tonight! ⏰"
+          "before: screaming, 'just one more story', getting out of bed 10 times, exhausted parents",
+          "we tried everything - weighted blankets, melatonin, earlier bedtimes, nothing worked",
+          "then we discovered the power of personalized stories where she was the main character",
+          "now: she asks to go to bed, falls asleep during the story, sleeps through the night",
+          "the difference: stories about her own adventures instead of random characters she doesn't care about",
+          "try our ai story generator free - creates stories starring your child in under 30 seconds"
+        ]
+      };
+    case "beginner":
+      return {
+        ...baseContent,
+        title: "complete beginners guide to stress free bedtime",
+        slides: [
+          "if bedtime is a daily battle, here's exactly what sleep experts recommend",
+          "step 1: start the routine 30 minutes before sleep time - bath, pajamas, dim lights",
+          "step 2: choose stories with calm themes - avoid monsters, scary parts, or high energy plots",
+          "step 3: make it personal - kids connect better when they see themselves in the story",
+          "step 4: keep the same routine every single night - consistency is everything for sleep",
+          "get unlimited personalized bedtime stories - free trial in our bio"
         ]
       };
     default:
       return {
         ...baseContent,
-        title: `🔥 ${formatInfo?.title.toUpperCase()} That Will Transform Your Parenting! 🚀`,
+        title: "the bedtime routine that changed everything",
         slides: [
-          "🔥 **ATTENTION PARENTS!** This viral parenting hack is changing bedtime forever!",
-          "💡 **DISCOVER:** How AI creates personalized stories with YOUR child as the hero!",
-          "⚡ **AMAZING:** Watch your child's confidence soar with custom adventures!",
-          "🌟 **BONUS:** No more 'read it again' - endless unique stories at your fingertips!",
-          "🎯 **ACT NOW:** Try our AI story generator FREE - your child will thank you! ⏰"
+          "this simple change transformed our chaotic bedtime into peaceful family time",
+          "instead of fighting over which book to read, we create new stories together",
+          "kids love being the hero of their own adventure every single night",
+          "parents love teaching values through personalized stories with specific morals",
+          "no more 'read it again' tantrums because every story is unique and special",
+          "try our ai story generator free - creates custom bedtime stories in seconds"
         ]
       };
   }
@@ -126,44 +139,48 @@ async function fetchGeneratedContent(
 ): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find((f) => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
-  const prompt = `You are a viral TikTok content creator and marketing expert. Based on this business: ${systemPrompt}
+  const prompt = `You are a viral TikTok content creator and parenting expert. Based on this business: ${systemPrompt}
 
-Create a VIRAL TikTok slideshow in the "${formatInfo?.title}" format${customTopic ? ` specifically about: ${topic}` : ''}.
+Create ORGANIC viral TikTok slideshow content in the "${formatInfo?.title}" format${customTopic ? ` specifically about: ${topic}` : ''}.
 
 CRITICAL REQUIREMENTS:
-1. **HOOK (Title)**: Create an IRRESISTIBLE clickbait title that makes people STOP scrolling
-   - Use power words: "SECRET", "SHOCKING", "MISTAKE", "GENIUS", "INSTANT"
-   - Include numbers and emojis strategically
-   - Create curiosity gap: "You won't believe what happens next"
-   - Make it controversial but truthful
-2. **ACTUAL USEFUL CONTENT**: Each slide must provide REAL, actionable value
-   - Give specific, practical tips that work
-   - Include insider knowledge from your business expertise
-   - Make each tip immediately implementable
-   - Use concrete examples, not vague advice
+1. **ORGANIC TONE**: Write like a real parent sharing genuine advice, NOT like an advertisement
+   - Use lowercase text throughout (except for proper nouns)
+   - NO emojis or markdown formatting
+   - Sound conversational and authentic
+   - Share real insights that parents actually need
+
+2. **PROVIDE REAL VALUE**: Each slide must give actionable parenting advice
+   - Share specific techniques that work
+   - Give concrete examples parents can implement tonight
+   - Include insider knowledge about child psychology and sleep
+   - Make each tip immediately useful
+
 3. **VIRAL PSYCHOLOGY**: 
-   - Start with a pattern interrupt (shocking fact/statistic)
+   - Start with a relatable problem most parents face
+   - Build credibility with specific details and results
    - Create "aha moments" that make people screenshot
-   - Build anticipation for each next slide
-   - Use FOMO and urgency throughout
-4. **CALL TO ACTION (Last Slide)**: 
-   - Create urgency with limited-time offers
-   - Give a clear next step related to your business
-   - Use action words: "Download NOW", "Get instant access", "Claim your spot"
-   - Include benefit-driven language
-5. **Search Terms**: Must be HIGHLY specific to your niche and audience for finding relevant visuals
+   - Use social proof and real scenarios
+
+4. **SUBTLE CALL TO ACTION (Last Slide Only)**: 
+   - Keep it natural and helpful, not pushy
+   - Position as a solution that supports the advice given
+   - Use benefit-focused language
+   - One slide maximum for CTA
+
+5. **Search Terms**: Highly specific to parenting and bedtime scenarios for relevant visuals
 
 Return ONLY valid JSON in this exact format:
 {
-  "title": "🚨 [NUMBER] [POWER WORD] [SPECIFIC TOPIC] SECRETS [AUTHORITY FIGURE] DON'T WANT YOU TO KNOW! 🤯",
+  "title": "authentic lowercase title that sounds like real parent advice",
   "slides": [
-    "🔥 **STOP!** [Shocking statistic or fact] that will blow your mind! #viral",
-    "💡 **TIP 1:** [Specific actionable advice with exact steps] - this changed EVERYTHING!",
-    "⚡ **TIP 2:** [Another concrete tip with real benefit] - most people do this WRONG!",
-    "🚨 **TIP 3:** [Insider secret with specific example] - industry professionals hate this trick!",
-    "✨ **TAKE ACTION NOW!** [Clear call to action with urgency] - Link in bio for [specific benefit]! ⏰"
+    "relatable problem statement that hooks parents",
+    "specific actionable tip with concrete details",
+    "another valuable tip with real examples",
+    "insider knowledge or technique most parents don't know",
+    "natural call to action positioned as helpful solution"
   ],
-  "searchTerms": ["[niche-specific visual 1]", "[exact audience scenario 2]", "[product/service in action 3]", "[problem being solved 4]", "[success result 5]"]
+  "searchTerms": ["specific parenting scenario 1", "bedtime routine moment 2", "parent-child interaction 3", "sleep environment detail 4", "story time scene 5"]
 }`;
 
   const response = await fetch("https://api.deepseek.com/chat/completions", {
