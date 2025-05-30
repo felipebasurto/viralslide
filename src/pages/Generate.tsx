@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ContentResult } from "@/components/ContentResult";
 
@@ -35,20 +42,70 @@ const viralFormats = [
   { id: "beginner", title: "Beginner's Guide", description: "Essential steps for newcomers", emoji: "🎯" },
 ];
 
+const languages = [
+  { code: "en", name: "English" },
+  { code: "es", name: "Español" },
+];
+
 /**
  * Demo content generator for when the API is unavailable.
  * @param formatId - ID of the viral format
  * @param customTopic - Optional custom topic string
+ * @param language - Language code (en/es)
  * @returns A GeneratedContent object with placeholder data
  */
-const getDemoContent = (formatId: string, customTopic: string): GeneratedContent => {
+const getDemoContent = (formatId: string, customTopic: string, language: string): GeneratedContent => {
   const formatInfo = viralFormats.find(f => f.id === formatId);
+  
+  if (language === "es") {
+    const baseContent = {
+      format: formatInfo?.title || formatId,
+      searchTerms: [
+        "padre leyendo cuento a niño",
+        "libro infantil personalizado",
+        "app de cuentos con inteligencia artificial",
+        "niño feliz escuchando cuento personalizado",
+        "familia unida contando historias"
+      ]
+    };
+
+    switch (formatId) {
+      case "top5tips":
+        return {
+          ...baseContent,
+          title: "5 secretos para que tu hijo se duerma en minutos",
+          slides: [
+            "la mayoría de padres comete este error y después se pregunta por qué sus hijos no duermen",
+            "consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe",
+            "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro",
+            "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío",
+            "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente",
+            "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
+          ]
+        };
+      default:
+        return {
+          ...baseContent,
+          title: "la rutina nocturna que cambió todo para nosotros",
+          slides: [
+            "este simple cambio transformó nuestro caótico momento de dormir en tiempo familiar pacífico",
+            "en lugar de pelear por qué libro leer, creamos nuevas historias juntos",
+            "a los niños les encanta ser el héroe de su propia aventura cada noche",
+            "a los padres les encanta enseñar valores a través de historias personalizadas",
+            "no más rabietas de 'léelo otra vez' porque cada historia es única y especial",
+            "prueba nuestro generador gratuito - crea cuentos personalizados en segundos"
+          ]
+        };
+    }
+  }
+
+  // English content with real value
   const baseContent = {
     format: formatInfo?.title || formatId,
     searchTerms: [
       "parent reading bedtime story to child",
       "children's book with personalized character",
-      "AI story generation app interface",
+      "child psychology research about sleep",
       "happy child listening to custom story",
       "family bonding with storytelling"
     ]
@@ -58,66 +115,40 @@ const getDemoContent = (formatId: string, customTopic: string): GeneratedContent
     case "top5tips":
       return {
         ...baseContent,
-        title: "5 bedtime story secrets that actually work",
+        title: "5 psychology-backed bedtime tips that actually work",
         slides: [
-          "most parents make the same bedtime mistake and wonder why kids won't sleep",
-          "tip 1: make your child the main character in every story - they listen 3x longer when they're the hero",
-          "tip 2: use the same opening phrase every night to signal sleep time - consistency trains their brain",
-          "tip 3: let them choose one story element - the setting, the sidekick, or the challenge",
-          "tip 4: end every story with a calm resolution where the hero goes to sleep peacefully",
-          "try our free ai story generator - creates personalized bedtime stories in seconds"
+          "child psychologists studied 500 families and found one common mistake that ruins bedtime",
+          "tip 1: create a consistent 'sleep signal' - use the same opening phrase every night to trigger calm mode",
+          "tip 2: give them control within boundaries - let them choose the setting or one character trait",
+          "tip 3: use their name as the hero - research shows kids focus 3x longer when they're the protagonist",
+          "tip 4: end with a 'sleepy resolution' - always have the main character wind down and rest peacefully",
+          "bonus: try personalized ai-generated stories that incorporate these techniques automatically"
         ]
       };
     case "commonerrors":
       return {
         ...baseContent,
-        title: "bedtime mistakes keeping your kids awake",
+        title: "bedtime mistakes that keep kids awake (backed by sleep research)",
         slides: [
-          "if your child fights bedtime every night, you might be making these common mistakes",
-          "mistake 1: reading the same 3 books over and over - kids get bored and resist",
-          "mistake 2: stories that are too exciting - action and adventure wake them up instead of calming down",
-          "mistake 3: no consistent routine - their brain doesn't know it's time to wind down",
-          "mistake 4: generic characters they can't connect with - personalization makes all the difference",
-          "get personalized bedtime stories that avoid all these mistakes - link in bio"
-        ]
-      };
-    case "beforeafter":
-      return {
-        ...baseContent,
-        title: "how we went from 2 hour bedtime battles to 15 minutes",
-        slides: [
-          "before: screaming, 'just one more story', getting out of bed 10 times, exhausted parents",
-          "we tried everything - weighted blankets, melatonin, earlier bedtimes, nothing worked",
-          "then we discovered the power of personalized stories where she was the main character",
-          "now: she asks to go to bed, falls asleep during the story, sleeps through the night",
-          "the difference: stories about her own adventures instead of random characters she doesn't care about",
-          "try our ai story generator free - creates stories starring your child in under 30 seconds"
-        ]
-      };
-    case "beginner":
-      return {
-        ...baseContent,
-        title: "complete beginners guide to stress free bedtime",
-        slides: [
-          "if bedtime is a daily battle, here's exactly what sleep experts recommend",
-          "step 1: start the routine 30 minutes before sleep time - bath, pajamas, dim lights",
-          "step 2: choose stories with calm themes - avoid monsters, scary parts, or high energy plots",
-          "step 3: make it personal - kids connect better when they see themselves in the story",
-          "step 4: keep the same routine every single night - consistency is everything for sleep",
-          "get unlimited personalized bedtime stories - free trial in our bio"
+          "sleep researchers identified these 4 mistakes in 80% of struggling families",
+          "mistake 1: exciting plots before bed - action stories increase cortisol and delay sleep by 45 minutes",
+          "mistake 2: inconsistent routine - your child's brain needs the same sequence to release melatonin",
+          "mistake 3: generic characters - kids disconnect when they can't relate to the protagonist",
+          "mistake 4: bright screens during story time - blue light blocks melatonin production for 2 hours",
+          "solution: try stories with calming themes where your child is the sleepy hero"
         ]
       };
     default:
       return {
         ...baseContent,
-        title: "the bedtime routine that changed everything",
+        title: "how we cut bedtime from 2 hours to 15 minutes (real parent story)",
         slides: [
-          "this simple change transformed our chaotic bedtime into peaceful family time",
-          "instead of fighting over which book to read, we create new stories together",
-          "kids love being the hero of their own adventure every single night",
-          "parents love teaching values through personalized stories with specific morals",
-          "no more 'read it again' tantrums because every story is unique and special",
-          "try our ai story generator free - creates custom bedtime stories in seconds"
+          "before: tantrums, 'just one more story', getting out of bed 10 times every night",
+          "the breakthrough: child development experts say kids need to see themselves succeeding at sleep",
+          "we started telling stories where she was the main character learning to love bedtime",
+          "after 2 weeks: she asks to go to bed and falls asleep during the story",
+          "the science: when kids are the hero, they internalize the positive sleep behaviors",
+          "try creating stories where your child is the protagonist who loves going to sleep"
         ]
       };
   }
@@ -129,6 +160,7 @@ const getDemoContent = (formatId: string, customTopic: string): GeneratedContent
  * @param systemPrompt - Business context prompt from settings
  * @param formatId - One of the `viralFormats` IDs
  * @param customTopic - Optional custom topic string
+ * @param language - Language code (en/es)
  * @returns Parsed `GeneratedContent`
  * @throws When fetch fails or response isn't valid JSON
  */
@@ -136,26 +168,42 @@ async function fetchGeneratedContent(
   apiKey: string,
   systemPrompt: string,
   formatId: string,
-  customTopic: string
+  customTopic: string,
+  language: string
 ): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find((f) => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
   
-  // Simplified prompt to avoid token limit issues
+  const languageInstruction = language === "es" 
+    ? "Respond in Spanish. All content should be in Spanish."
+    : "Respond in English. All content should be in English.";
+  
+  // Value-first prompt focused on providing real insights
   const prompt = `Create viral TikTok slideshow content in "${formatInfo?.title}" format for: ${systemPrompt}
 
 ${customTopic ? `Topic: ${topic}` : ''}
 
+${languageInstruction}
+
+CRITICAL: Focus on providing REAL VALUE first. This is educational content that happens to mention a product at the end.
+
 Requirements:
-- Organic tone, lowercase text, no emojis
-- 5 slides with real parenting value
-- Last slide: subtle call to action
-- Return only valid JSON
+- First 4-5 slides: Genuine, actionable advice that parents can use immediately
+- Include real insights, research-backed tips, or relatable parent experiences
+- Last slide only: Subtle mention of the product as a helpful tool
+- Organic tone, lowercase text, no emojis or markdown
+- Make it educational and valuable, not promotional
+
+Example value-first approach:
+- Share actual parenting psychology
+- Give specific, actionable steps
+- Include relatable parent struggles
+- Provide immediate solutions they can try tonight
 
 JSON format:
 {
-  "title": "authentic lowercase title",
-  "slides": ["hook slide", "tip 1", "tip 2", "insight", "call to action"],
+  "title": "authentic lowercase title that promises real value",
+  "slides": ["value slide 1", "value slide 2", "value slide 3", "value slide 4", "subtle product mention"],
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5"]
 }`;
 
@@ -168,10 +216,10 @@ JSON format:
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "deepseek-chat", // Using regular chat model instead of reasoner
+      model: "deepseek-chat",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      max_tokens: 1000, // Reduced token limit for more focused response
+      max_tokens: 1000,
     }),
   });
 
@@ -232,6 +280,7 @@ JSON format:
 const Generate = () => {
   const [selectedFormat, setSelectedFormat] = useState<string>("");
   const [customTopic, setCustomTopic] = useState<string>("");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const { toast } = useToast();
@@ -253,7 +302,7 @@ const Generate = () => {
 
     // Fallback to demo content if no API key or system prompt
     if (!apiKey || !systemPrompt) {
-      const demo = getDemoContent(selectedFormat, customTopic);
+      const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
       setGeneratedContent(demo);
       toast({
         title: "Demo content generated! 🎬",
@@ -264,7 +313,7 @@ const Generate = () => {
     }
 
     try {
-      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic);
+      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage);
       setGeneratedContent(content);
       toast({
         title: "Viral content generated! 🔥",
@@ -273,7 +322,7 @@ const Generate = () => {
     } catch (error) {
       console.error("Generation error:", error);
       // Fallback to demo if API call or parsing fails
-      const demo = getDemoContent(selectedFormat, customTopic);
+      const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
       setGeneratedContent(demo);
       toast({
         title: "Demo content generated! 🎬",
@@ -309,6 +358,30 @@ const Generate = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Generation Panel */}
           <div className="space-y-6">
+            {/* Language Selection */}
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Globe className="w-5 h-5 mr-2 text-pink-400" />
+                  Language
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                  <SelectTrigger className="bg-white/10 border-purple-300 text-white">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/95 backdrop-blur-lg border-purple-300">
+                    {languages.map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        {lang.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardContent>
+            </Card>
+
             {/* Format Selection */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardHeader>
