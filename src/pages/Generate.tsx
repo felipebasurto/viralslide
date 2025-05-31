@@ -2,27 +2,14 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ContentResult } from "@/components/ContentResult";
-
 interface GeneratedContent {
   /** The clickbait-style title / hook for the slideshow */
   title: string;
@@ -37,57 +24,50 @@ interface GeneratedContent {
   /** The human-readable format name (e.g. "Top 5 Tips") */
   format: string;
 }
-
-const viralFormats = [
-  { 
-    id: "top5tips", 
-    title: "Top 5 Tips", 
-    description: "Share your best 5 tips about your niche", 
-    emoji: "🔥",
-    example: "5 morning habits that changed my life"
-  },
-  { 
-    id: "commonerrors", 
-    title: "Common Errors", 
-    description: "Highlight mistakes people make in your field", 
-    emoji: "⚠️",
-    example: "mistakes killing your productivity"
-  },
-  { 
-    id: "recommendations", 
-    title: "Recommendations", 
-    description: "Recommend tools, products, or strategies", 
-    emoji: "⭐",
-    example: "tools every entrepreneur needs"
-  },
-  { 
-    id: "beforeafter", 
-    title: "Before vs After", 
-    description: "Show transformation or improvement", 
-    emoji: "✨",
-    example: "my morning routine transformation"
-  },
-  { 
-    id: "myths", 
-    title: "Myths vs Facts", 
-    description: "Debunk common misconceptions", 
-    emoji: "💡",
-    example: "productivity myths debunked"
-  },
-  { 
-    id: "beginner", 
-    title: "Beginner's Guide", 
-    description: "Essential steps for newcomers", 
-    emoji: "🎯",
-    example: "getting started with meditation"
-  },
-];
-
-const languages = [
-  { code: "en", name: "English" },
-  { code: "es", name: "Español" },
-];
-
+const viralFormats = [{
+  id: "top5tips",
+  title: "Top 5 Tips",
+  description: "Share your best 5 tips about your niche",
+  emoji: "🔥",
+  example: "5 morning habits that changed my life"
+}, {
+  id: "commonerrors",
+  title: "Common Errors",
+  description: "Highlight mistakes people make in your field",
+  emoji: "⚠️",
+  example: "mistakes killing your productivity"
+}, {
+  id: "recommendations",
+  title: "Recommendations",
+  description: "Recommend tools, products, or strategies",
+  emoji: "⭐",
+  example: "tools every entrepreneur needs"
+}, {
+  id: "beforeafter",
+  title: "Before vs After",
+  description: "Show transformation or improvement",
+  emoji: "✨",
+  example: "my morning routine transformation"
+}, {
+  id: "myths",
+  title: "Myths vs Facts",
+  description: "Debunk common misconceptions",
+  emoji: "💡",
+  example: "productivity myths debunked"
+}, {
+  id: "beginner",
+  title: "Beginner's Guide",
+  description: "Essential steps for newcomers",
+  emoji: "🎯",
+  example: "getting started with meditation"
+}];
+const languages = [{
+  code: "en",
+  name: "English"
+}, {
+  code: "es",
+  name: "Español"
+}];
 const topicSuggestions = {
   top5tips: ["productivity hacks", "morning routines", "healthy habits", "time management", "study techniques"],
   commonerrors: ["workout mistakes", "business failures", "coding errors", "diet misconceptions", "social media blunders"],
@@ -102,34 +82,18 @@ const topicSuggestions = {
  */
 const getDemoContent = (formatId: string, customTopic: string, language: string): GeneratedContent => {
   const formatInfo = viralFormats.find(f => f.id === formatId);
-  
   if (language === "es") {
     const baseContent = {
       format: formatInfo?.title || formatId,
-      searchTerms: [
-        "padre leyendo cuento a niño",
-        "libro infantil personalizado",
-        "app de cuentos con inteligencia artificial",
-        "niño feliz escuchando cuento personalizado",
-        "familia unida contando historias",
-        "niño durmiendo pacíficamente",
-        "padres relajados después del cuento"
-      ]
+      searchTerms: ["padre leyendo cuento a niño", "libro infantil personalizado", "app de cuentos con inteligencia artificial", "niño feliz escuchando cuento personalizado", "familia unida contando historias", "niño durmiendo pacíficamente", "padres relajados después del cuento"]
     };
-
     switch (formatId) {
       case "top5tips":
         return {
           ...baseContent,
           title: "5 secretos para que tu hijo se duerma en minutos",
           hook: "¿sabías que hay una forma de hacer que tu hijo se duerma en menos de 15 minutos cada noche?",
-          slides: [
-            "consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe",
-            "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro",
-            "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío",
-            "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente",
-            "consejo 5: mantén la historia entre 5-10 minutos máximo para evitar sobreestimulación"
-          ],
+          slides: ["consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe", "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro", "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío", "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente", "consejo 5: mantén la historia entre 5-10 minutos máximo para evitar sobreestimulación"],
           cta: "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
         };
       default:
@@ -137,13 +101,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
           ...baseContent,
           title: "la rutina nocturna que cambió todo para nosotros",
           hook: "deja de desplazarte si quieres descubrir cómo transformamos el caos nocturno en tiempo familiar pacífico",
-          slides: [
-            "antes: peleas por qué libro leer, rabietas constantes, dormir tomaba 2 horas",
-            "el cambio: empezamos a crear nuevas historias juntos cada noche",
-            "a los niños les encanta ser el héroe de su propia aventura personalizada",
-            "a los padres les encanta enseñar valores a través de historias únicas",
-            "resultado: no más 'léelo otra vez' porque cada historia es especial y nueva"
-          ],
+          slides: ["antes: peleas por qué libro leer, rabietas constantes, dormir tomaba 2 horas", "el cambio: empezamos a crear nuevas historias juntos cada noche", "a los niños les encanta ser el héroe de su propia aventura personalizada", "a los padres les encanta enseñar valores a través de historias únicas", "resultado: no más 'léelo otra vez' porque cada historia es especial y nueva"],
           cta: "prueba nuestro generador gratuito - crea cuentos personalizados en segundos"
         };
     }
@@ -152,30 +110,15 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
   // English content
   const baseContent = {
     format: formatInfo?.title || formatId,
-    searchTerms: [
-      "parent reading bedtime story to child",
-      "children's book with personalized character",
-      "child psychology research about sleep",
-      "happy child listening to custom story",
-      "family bonding with storytelling",
-      "peaceful child sleeping",
-      "relaxed parents after bedtime"
-    ]
+    searchTerms: ["parent reading bedtime story to child", "children's book with personalized character", "child psychology research about sleep", "happy child listening to custom story", "family bonding with storytelling", "peaceful child sleeping", "relaxed parents after bedtime"]
   };
-
   switch (formatId) {
     case "top5tips":
       return {
         ...baseContent,
         title: "5 psychology-backed bedtime tips that actually work",
         hook: "what if I told you there's a simple way to get your child to sleep in under 15 minutes every night?",
-        slides: [
-          "tip 1: make them the hero - research shows kids focus 3x longer when they're the protagonist",
-          "tip 2: use the same opening phrase every night to trigger their brain's sleep mode",
-          "tip 3: give them control within boundaries - let them choose the setting or one character trait", 
-          "tip 4: always end with a 'sleepy resolution' where the main character winds down peacefully",
-          "tip 5: keep stories 5-10 minutes max to avoid overstimulation before sleep"
-        ],
+        slides: ["tip 1: make them the hero - research shows kids focus 3x longer when they're the protagonist", "tip 2: use the same opening phrase every night to trigger their brain's sleep mode", "tip 3: give them control within boundaries - let them choose the setting or one character trait", "tip 4: always end with a 'sleepy resolution' where the main character winds down peacefully", "tip 5: keep stories 5-10 minutes max to avoid overstimulation before sleep"],
         cta: "try our free ai story generator - create personalized bedtime stories in seconds"
       };
     case "commonerrors":
@@ -183,13 +126,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         ...baseContent,
         title: "bedtime mistakes that keep kids awake (backed by sleep research)",
         hook: "stop scrolling - you need to see this if you're struggling with bedtime routines",
-        slides: [
-          "mistake 1: exciting plots before bed - action stories increase cortisol and delay sleep by 45 minutes",
-          "mistake 2: inconsistent routine - your child's brain needs the same sequence to release melatonin",
-          "mistake 3: generic characters - kids disconnect when they can't relate to the protagonist",
-          "mistake 4: bright screens during story time - blue light blocks melatonin for 2 hours",
-          "the fix: calming stories where your child is the sleepy hero learning to love bedtime"
-        ],
+        slides: ["mistake 1: exciting plots before bed - action stories increase cortisol and delay sleep by 45 minutes", "mistake 2: inconsistent routine - your child's brain needs the same sequence to release melatonin", "mistake 3: generic characters - kids disconnect when they can't relate to the protagonist", "mistake 4: bright screens during story time - blue light blocks melatonin for 2 hours", "the fix: calming stories where your child is the sleepy hero learning to love bedtime"],
         cta: "try stories with personalized characters that teach healthy sleep habits"
       };
     default:
@@ -197,13 +134,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         ...baseContent,
         title: "how we cut bedtime from 2 hours to 15 minutes (real parent story)",
         hook: "imagine if you could transform your chaotic bedtime into peaceful family time in just 2 weeks",
-        slides: [
-          "before: tantrums, 'just one more story', getting out of bed 10 times every night",
-          "the breakthrough: child experts say kids need to see themselves succeeding at sleep",
-          "we started telling stories where she was the hero learning to love bedtime",
-          "after 2 weeks: she asks to go to bed and falls asleep during the story",
-          "the science: when kids are the protagonist, they internalize positive sleep behaviors"
-        ],
+        slides: ["before: tantrums, 'just one more story', getting out of bed 10 times every night", "the breakthrough: child experts say kids need to see themselves succeeding at sleep", "we started telling stories where she was the hero learning to love bedtime", "after 2 weeks: she asks to go to bed and falls asleep during the story", "the science: when kids are the protagonist, they internalize positive sleep behaviors"],
         cta: "create stories where your child is the hero who loves going to sleep"
       };
   }
@@ -212,23 +143,11 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
 /**
  * Call Deepseek API to generate viral TikTok slideshow content.
  */
-async function fetchGeneratedContent(
-  apiKey: string,
-  systemPrompt: string,
-  formatId: string,
-  customTopic: string,
-  language: string,
-  onProgress?: (stage: string) => void
-): Promise<GeneratedContent> {
-  const formatInfo = viralFormats.find((f) => f.id === formatId);
+async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
+  const formatInfo = viralFormats.find(f => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
-  
   onProgress?.("Preparing viral content strategy...");
-  
-  const languageInstruction = language === "es" 
-    ? "Respond in Spanish. All content should be in Spanish."
-    : "Respond in English. All content should be in English.";
-  
+  const languageInstruction = language === "es" ? "Respond in Spanish. All content should be in Spanish." : "Respond in English. All content should be in English.";
   const viralHooksExamples = language === "es" ? `
 EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "¿sabías que hay una forma sencilla de conseguir [RESULTADO]?"
@@ -254,7 +173,6 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "are you tired of [PROBLEM]? then try this"
 - "here's why 99% of [AUDIENCE] fail at [TOPIC]"
 `;
-
   const prompt = `Create viral TikTok slideshow content in "${formatInfo?.title}" format for: ${systemPrompt}
 
 ${customTopic ? `Topic: ${topic}` : ''}
@@ -283,37 +201,32 @@ JSON format:
   "cta": "subtle product mention as helpful solution",
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
 }`;
-
   onProgress?.("Generating viral hook...");
-
   const response = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       model: "deepseek-chat",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{
+        role: "user",
+        content: prompt
+      }],
       temperature: 0.7,
-      max_tokens: 1200,
-    }),
+      max_tokens: 1200
+    })
   });
-
   onProgress?.("Processing content slides...");
-
   if (!response.ok) {
     const errorText = await response.text();
     console.error("API request failed:", response.status, errorText);
     throw new Error(`API request failed (${response.status}): ${errorText}`);
   }
-
   const apiResponse = await response.json();
-  
   onProgress?.("Finalizing viral content...");
-  
   const content = apiResponse.choices?.[0]?.message?.content || "";
-  
   if (!content) {
     throw new Error("Empty response from API");
   }
@@ -321,29 +234,24 @@ JSON format:
   // Enhanced JSON extraction
   let jsonString = content;
   jsonString = jsonString.replace(/```json\s*|\s*```/g, "").trim();
-  
   const jsonStart = jsonString.indexOf('{');
   const jsonEnd = jsonString.lastIndexOf('}');
-  
   if (jsonStart === -1 || jsonEnd === -1) {
     console.error("No JSON object found in response");
     throw new Error("No valid JSON found in response");
   }
-  
   jsonString = jsonString.substring(jsonStart, jsonEnd + 1);
-
   try {
     const parsed = JSON.parse(jsonString);
-    
+
     // Validate required fields for new structure
     if (!parsed.title || !parsed.hook || !Array.isArray(parsed.slides) || !parsed.cta || !Array.isArray(parsed.searchTerms)) {
       console.error("Invalid JSON structure:", parsed);
       throw new Error("Response missing required fields (title, hook, slides, cta, searchTerms)");
     }
-    
     return {
       ...parsed,
-      format: formatInfo?.title || formatId,
+      format: formatInfo?.title || formatId
     };
   } catch (e) {
     console.error("JSON parsing failed:", e);
@@ -351,7 +259,6 @@ JSON format:
     throw new Error("Invalid JSON response from API");
   }
 }
-
 const Generate = () => {
   const [selectedFormat, setSelectedFormat] = useState<string>("");
   const [customTopic, setCustomTopic] = useState<string>("");
@@ -361,7 +268,9 @@ const Generate = () => {
   const [generationProgress, setGenerationProgress] = useState<number>(0);
   const [currentStage, setCurrentStage] = useState<string>("");
   const [estimatedTime, setEstimatedTime] = useState<number>(0);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
 
   // Load saved preferences
   useEffect(() => {
@@ -381,11 +290,9 @@ const Generate = () => {
       localStorage.setItem("preferred_format", selectedFormat);
     }
   }, [selectedFormat]);
-
   useEffect(() => {
     localStorage.setItem("preferred_language", selectedLanguage);
   }, [selectedLanguage]);
-
   const handleProgress = (stage: string) => {
     setCurrentStage(stage);
     if (stage.includes("Preparing")) {
@@ -402,20 +309,17 @@ const Generate = () => {
       setEstimatedTime(2);
     }
   };
-
   const handleGenerate = async () => {
     if (!selectedFormat) {
       toast({
         title: "Format Required",
         description: "Please select a viral format to generate content.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     const apiKey = localStorage.getItem("deepseek_api_key") || "";
     const systemPrompt = localStorage.getItem("system_prompt") || "";
-
     setIsGenerating(true);
     setGenerationProgress(0);
     setEstimatedTime(20);
@@ -435,7 +339,7 @@ const Generate = () => {
               setGenerationProgress(100);
               toast({
                 title: "Demo content generated! 🎬",
-                description: "Using demo content. Add your API key in settings for personalized results.",
+                description: "Using demo content. Add your API key in settings for personalized results."
               });
               setIsGenerating(false);
             }, 500);
@@ -444,14 +348,13 @@ const Generate = () => {
       }, 1000);
       return;
     }
-
     try {
       const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, handleProgress);
       setGeneratedContent(content);
       setGenerationProgress(100);
       toast({
         title: "Viral content generated! 🔥",
-        description: "Your slideshow with viral hook is ready to go viral!",
+        description: "Your slideshow with viral hook is ready to go viral!"
       });
     } catch (error) {
       console.error("Generation error:", error);
@@ -461,7 +364,7 @@ const Generate = () => {
       setGenerationProgress(100);
       toast({
         title: "Demo content generated! 🎬",
-        description: "API unavailable or returned invalid JSON. Using demo content instead.",
+        description: "API unavailable or returned invalid JSON. Using demo content instead."
       });
     } finally {
       setIsGenerating(false);
@@ -469,24 +372,16 @@ const Generate = () => {
       setEstimatedTime(0);
     }
   };
-
   const handleTopicSuggestion = (suggestion: string) => {
     setCustomTopic(suggestion);
   };
-
   const selectedFormatInfo = viralFormats.find(f => f.id === selectedFormat);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+  return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-300"
-            >
+            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:text-white transition-all duration-300 bg-fuchsia-600 hover:bg-fuchsia-500">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
@@ -518,11 +413,9 @@ const Generate = () => {
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/95 backdrop-blur-lg border-purple-300">
-                    {languages.map((lang) => (
-                      <SelectItem key={lang.code} value={lang.code}>
+                    {languages.map(lang => <SelectItem key={lang.code} value={lang.code}>
                         {lang.name}
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
                 </Select>
               </CardContent>
@@ -542,25 +435,14 @@ const Generate = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-3">
-                  {viralFormats.map((format) => (
-                    <Button
-                      key={format.id}
-                      variant={selectedFormat === format.id ? "default" : "outline"}
-                      className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
-                        selectedFormat === format.id
-                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600"
-                          : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-transparent"
-                      }`}
-                      onClick={() => setSelectedFormat(format.id)}
-                    >
+                  {viralFormats.map(format => <Button key={format.id} variant={selectedFormat === format.id ? "default" : "outline"} className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${selectedFormat === format.id ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600" : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-transparent"}`} onClick={() => setSelectedFormat(format.id)}>
                       <span className="text-2xl">{format.emoji}</span>
                       <div className="flex-1 text-left">
                         <div className="font-medium">{format.title}</div>
                         <div className="text-xs opacity-80 mt-1">{format.description}</div>
                         <div className="text-xs italic opacity-60 mt-1">e.g. "{format.example}"</div>
                       </div>
-                    </Button>
-                  ))}
+                    </Button>)}
                 </div>
               </CardContent>
             </Card>
@@ -574,56 +456,33 @@ const Generate = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Input
-                  placeholder="e.g., morning routines, productivity..."
-                  value={customTopic}
-                  onChange={(e) => setCustomTopic(e.target.value)}
-                  className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
-                />
+                <Input placeholder="e.g., morning routines, productivity..." value={customTopic} onChange={e => setCustomTopic(e.target.value)} className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400" />
                 
-                {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && (
-                  <div>
+                {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && <div>
                     <Label className="text-white text-sm mb-2 block">Popular topics for {selectedFormatInfo?.title}:</Label>
                     <div className="flex flex-wrap gap-2">
-                      {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map((suggestion) => (
-                        <Badge
-                          key={suggestion}
-                          variant="secondary"
-                          className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 cursor-pointer transition-colors"
-                          onClick={() => handleTopicSuggestion(suggestion)}
-                        >
+                      {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map(suggestion => <Badge key={suggestion} variant="secondary" className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 cursor-pointer transition-colors" onClick={() => handleTopicSuggestion(suggestion)}>
                           {suggestion}
-                        </Badge>
-                      ))}
+                        </Badge>)}
                     </div>
-                  </div>
-                )}
+                  </div>}
               </CardContent>
             </Card>
 
             {/* Generate Button with Progress */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
-                <Button
-                  onClick={handleGenerate}
-                  disabled={isGenerating || !selectedFormat}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
-                >
-                  {isGenerating ? (
-                    <>
+                <Button onClick={handleGenerate} disabled={isGenerating || !selectedFormat} className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg">
+                  {isGenerating ? <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                       Creating Viral Content...
-                    </>
-                  ) : (
-                    <>
+                    </> : <>
                       <Sparkles className="w-5 h-5 mr-2" />
                       Generate Viral Content
-                    </>
-                  )}
+                    </>}
                 </Button>
 
-                {isGenerating && (
-                  <div className="mt-4 space-y-3">
+                {isGenerating && <div className="mt-4 space-y-3">
                     <Progress value={generationProgress} className="h-2" />
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-purple-300 flex items-center">
@@ -635,24 +494,20 @@ const Generate = () => {
                         ~{estimatedTime}s remaining
                       </span>
                     </div>
-                  </div>
-                )}
+                  </div>}
               </CardContent>
             </Card>
           </div>
 
           {/* Results Panel */}
           <div>
-            {generatedContent ? (
-              <div className="space-y-4">
+            {generatedContent ? <div className="space-y-4">
                 <div className="flex items-center space-x-2 mb-4">
                   <CheckCircle className="w-5 h-5 text-green-400" />
                   <span className="text-green-300 font-medium">Content generated successfully!</span>
                 </div>
                 <ContentResult content={generatedContent} />
-              </div>
-            ) : (
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
+              </div> : <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
                 <CardContent className="text-center py-16">
                   <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
                   <p className="text-gray-300 text-lg mb-2">
@@ -662,13 +517,10 @@ const Generate = () => {
                     Choose from proven formats that drive engagement
                   </p>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
           </div>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Generate;
