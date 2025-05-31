@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ContentResult } from "@/components/ContentResult";
+
 interface GeneratedContent {
   /** The clickbait-style title / hook for the slideshow */
   title: string;
@@ -24,6 +25,7 @@ interface GeneratedContent {
   /** The human-readable format name (e.g. "Top 5 Tips") */
   format: string;
 }
+
 const viralFormats = [{
   id: "top5tips",
   title: "Top 5 Tips",
@@ -60,7 +62,14 @@ const viralFormats = [{
   description: "Essential steps for newcomers",
   emoji: "🎯",
   example: "getting started with meditation"
+}, {
+  id: "custom",
+  title: "Custom Format",
+  description: "Create your own unique format",
+  emoji: "🎨",
+  example: "your custom viral format"
 }];
+
 const languages = [{
   code: "en",
   name: "English"
@@ -68,13 +77,15 @@ const languages = [{
   code: "es",
   name: "Español"
 }];
+
 const topicSuggestions = {
   top5tips: ["productivity hacks", "morning routines", "healthy habits", "time management", "study techniques"],
   commonerrors: ["workout mistakes", "business failures", "coding errors", "diet misconceptions", "social media blunders"],
   recommendations: ["productivity apps", "books to read", "workout equipment", "learning resources", "business tools"],
   beforeafter: ["morning routine", "workspace setup", "fitness journey", "skill development", "mindset shift"],
   myths: ["fitness myths", "productivity myths", "money myths", "health myths", "learning myths"],
-  beginner: ["meditation basics", "investing 101", "cooking essentials", "fitness fundamentals", "coding basics"]
+  beginner: ["meditation basics", "investing 101", "cooking essentials", "fitness fundamentals", "coding basics"],
+  custom: ["viral hooks", "storytelling", "engagement tactics", "trend analysis", "creative formats"]
 };
 
 /**
@@ -95,6 +106,14 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
           hook: "¿sabías que hay una forma de hacer que tu hijo se duerma en menos de 15 minutos cada noche?",
           slides: ["consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe", "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro", "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío", "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente", "consejo 5: mantén la historia entre 5-10 minutos máximo para evitar sobreestimulación"],
           cta: "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
+        };
+      case "custom":
+        return {
+          ...baseContent,
+          title: "formato personalizado: mi estrategia única",
+          hook: "este formato personalizado está diseñado para tu audiencia específica",
+          slides: ["elemento 1: adapta tu mensaje a tu nicho", "elemento 2: usa ejemplos específicos de tu experiencia", "elemento 3: incluye datos relevantes para tu audiencia", "elemento 4: añade tu toque personal único", "elemento 5: termina con tu propuesta de valor"],
+          cta: "prueba tu formato personalizado y ve los resultados"
         };
       default:
         return {
@@ -121,6 +140,14 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         slides: ["tip 1: make them the hero - research shows kids focus 3x longer when they're the protagonist", "tip 2: use the same opening phrase every night to trigger their brain's sleep mode", "tip 3: give them control within boundaries - let them choose the setting or one character trait", "tip 4: always end with a 'sleepy resolution' where the main character winds down peacefully", "tip 5: keep stories 5-10 minutes max to avoid overstimulation before sleep"],
         cta: "try our free ai story generator - create personalized bedtime stories in seconds"
       };
+    case "custom":
+      return {
+        ...baseContent,
+        title: "custom format: my unique viral strategy",
+        hook: "this custom format is designed specifically for your audience and goals",
+        slides: ["element 1: tailor your message to your specific niche", "element 2: use examples from your personal experience", "element 3: include data points relevant to your audience", "element 4: add your unique perspective or twist", "element 5: end with your specific value proposition"],
+        cta: "try your custom format and watch the engagement soar"
+      };
     case "commonerrors":
       return {
         ...baseContent,
@@ -143,11 +170,13 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
 /**
  * Call Deepseek API to generate viral TikTok slideshow content.
  */
-async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
+async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, customFormat: string, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find(f => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
   onProgress?.("Preparing viral content strategy...");
+  
   const languageInstruction = language === "es" ? "Respond in Spanish. All content should be in Spanish." : "Respond in English. All content should be in English.";
+  
   const viralHooksExamples = language === "es" ? `
 EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "¿sabías que hay una forma sencilla de conseguir [RESULTADO]?"
@@ -173,7 +202,12 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "are you tired of [PROBLEM]? then try this"
 - "here's why 99% of [AUDIENCE] fail at [TOPIC]"
 `;
-  const prompt = `Create viral TikTok slideshow content in "${formatInfo?.title}" format for: ${systemPrompt}
+
+  const formatInstruction = formatId === "custom" && customFormat ? 
+    `Create content using this CUSTOM FORMAT: ${customFormat}` : 
+    `Create viral TikTok slideshow content in "${formatInfo?.title}" format`;
+
+  const prompt = `${formatInstruction} for: ${systemPrompt}
 
 ${customTopic ? `Topic: ${topic}` : ''}
 
@@ -201,6 +235,7 @@ JSON format:
   "cta": "subtle product mention as helpful solution",
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
 }`;
+
   onProgress?.("Generating viral hook...");
   const response = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
@@ -218,12 +253,14 @@ JSON format:
       max_tokens: 1200
     })
   });
+
   onProgress?.("Processing content slides...");
   if (!response.ok) {
     const errorText = await response.text();
     console.error("API request failed:", response.status, errorText);
     throw new Error(`API request failed (${response.status}): ${errorText}`);
   }
+
   const apiResponse = await response.json();
   onProgress?.("Finalizing viral content...");
   const content = apiResponse.choices?.[0]?.message?.content || "";
@@ -241,6 +278,7 @@ JSON format:
     throw new Error("No valid JSON found in response");
   }
   jsonString = jsonString.substring(jsonStart, jsonEnd + 1);
+  
   try {
     const parsed = JSON.parse(jsonString);
 
@@ -259,8 +297,10 @@ JSON format:
     throw new Error("Invalid JSON response from API");
   }
 }
+
 const Generate = () => {
   const [selectedFormat, setSelectedFormat] = useState<string>("");
+  const [customFormat, setCustomFormat] = useState<string>("");
   const [customTopic, setCustomTopic] = useState<string>("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -268,19 +308,22 @@ const Generate = () => {
   const [generationProgress, setGenerationProgress] = useState<number>(0);
   const [currentStage, setCurrentStage] = useState<string>("");
   const [estimatedTime, setEstimatedTime] = useState<number>(0);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
 
   // Load saved preferences
   useEffect(() => {
     const savedFormat = localStorage.getItem("preferred_format");
     const savedLanguage = localStorage.getItem("preferred_language");
+    const savedCustomFormat = localStorage.getItem("custom_format");
+    
     if (savedFormat && viralFormats.find(f => f.id === savedFormat)) {
       setSelectedFormat(savedFormat);
     }
     if (savedLanguage) {
       setSelectedLanguage(savedLanguage);
+    }
+    if (savedCustomFormat) {
+      setCustomFormat(savedCustomFormat);
     }
   }, []);
 
@@ -290,9 +333,15 @@ const Generate = () => {
       localStorage.setItem("preferred_format", selectedFormat);
     }
   }, [selectedFormat]);
+  
   useEffect(() => {
     localStorage.setItem("preferred_language", selectedLanguage);
   }, [selectedLanguage]);
+  
+  useEffect(() => {
+    localStorage.setItem("custom_format", customFormat);
+  }, [customFormat]);
+
   const handleProgress = (stage: string) => {
     setCurrentStage(stage);
     if (stage.includes("Preparing")) {
@@ -309,6 +358,7 @@ const Generate = () => {
       setEstimatedTime(2);
     }
   };
+
   const handleGenerate = async () => {
     if (!selectedFormat) {
       toast({
@@ -318,6 +368,16 @@ const Generate = () => {
       });
       return;
     }
+
+    if (selectedFormat === "custom" && !customFormat.trim()) {
+      toast({
+        title: "Custom Format Required",
+        description: "Please describe your custom format.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const apiKey = localStorage.getItem("deepseek_api_key") || "";
     const systemPrompt = localStorage.getItem("system_prompt") || "";
     setIsGenerating(true);
@@ -348,8 +408,9 @@ const Generate = () => {
       }, 1000);
       return;
     }
+
     try {
-      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, handleProgress);
+      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, customFormat, handleProgress);
       setGeneratedContent(content);
       setGenerationProgress(100);
       toast({
@@ -372,16 +433,20 @@ const Generate = () => {
       setEstimatedTime(0);
     }
   };
+
   const handleTopicSuggestion = (suggestion: string) => {
     setCustomTopic(suggestion);
   };
+
   const selectedFormatInfo = viralFormats.find(f => f.id === selectedFormat);
-  return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:text-white transition-all duration-300 bg-fuchsia-600 hover:bg-fuchsia-500">
+            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:text-white transition-all duration-300 bg-purple-600/20 hover:bg-purple-500/30 backdrop-blur-sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
@@ -412,10 +477,12 @@ const Generate = () => {
                   <SelectTrigger className="bg-white/10 border-purple-300 text-white">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white/95 backdrop-blur-lg border-purple-300">
-                    {languages.map(lang => <SelectItem key={lang.code} value={lang.code}>
+                  <SelectContent className="bg-gray-900/95 backdrop-blur-lg border-purple-300">
+                    {languages.map(lang => (
+                      <SelectItem key={lang.code} value={lang.code}>
                         {lang.name}
-                      </SelectItem>)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </CardContent>
@@ -435,17 +502,50 @@ const Generate = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-3">
-                  {viralFormats.map(format => <Button key={format.id} variant={selectedFormat === format.id ? "default" : "outline"} className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${selectedFormat === format.id ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600" : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-transparent"}`} onClick={() => setSelectedFormat(format.id)}>
+                  {viralFormats.map(format => (
+                    <Button
+                      key={format.id}
+                      variant={selectedFormat === format.id ? "default" : "outline"}
+                      className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
+                        selectedFormat === format.id
+                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600"
+                          : "border-purple-300/50 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-purple-800/20 backdrop-blur-sm"
+                      }`}
+                      onClick={() => setSelectedFormat(format.id)}
+                    >
                       <span className="text-2xl">{format.emoji}</span>
                       <div className="flex-1 text-left">
                         <div className="font-medium">{format.title}</div>
                         <div className="text-xs opacity-80 mt-1">{format.description}</div>
                         <div className="text-xs italic opacity-60 mt-1">e.g. "{format.example}"</div>
                       </div>
-                    </Button>)}
+                    </Button>
+                  ))}
                 </div>
               </CardContent>
             </Card>
+
+            {/* Custom Format Field */}
+            {selectedFormat === "custom" && (
+              <Card className="bg-white/10 backdrop-blur-lg border-white/20 border-purple-400/50">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    🎨 Custom Format Description
+                  </CardTitle>
+                  <CardDescription className="text-purple-200">
+                    Describe your unique viral format in detail
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Input
+                    placeholder="e.g., 'Start with a shocking statistic, then reveal 3 counterintuitive strategies, end with a personal story'"
+                    value={customFormat}
+                    onChange={(e) => setCustomFormat(e.target.value)}
+                    className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
+                  />
+                </CardContent>
+              </Card>
+            )}
 
             {/* Custom Topic with Suggestions */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
@@ -456,33 +556,56 @@ const Generate = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Input placeholder="e.g., morning routines, productivity..." value={customTopic} onChange={e => setCustomTopic(e.target.value)} className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400" />
+                <Input
+                  placeholder="e.g., morning routines, productivity..."
+                  value={customTopic}
+                  onChange={(e) => setCustomTopic(e.target.value)}
+                  className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
+                />
                 
-                {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && <div>
+                {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && (
+                  <div>
                     <Label className="text-white text-sm mb-2 block">Popular topics for {selectedFormatInfo?.title}:</Label>
                     <div className="flex flex-wrap gap-2">
-                      {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map(suggestion => <Badge key={suggestion} variant="secondary" className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 cursor-pointer transition-colors" onClick={() => handleTopicSuggestion(suggestion)}>
+                      {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map(suggestion => (
+                        <Badge
+                          key={suggestion}
+                          variant="secondary"
+                          className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 cursor-pointer transition-colors"
+                          onClick={() => handleTopicSuggestion(suggestion)}
+                        >
                           {suggestion}
-                        </Badge>)}
+                        </Badge>
+                      ))}
                     </div>
-                  </div>}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
             {/* Generate Button with Progress */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
-                <Button onClick={handleGenerate} disabled={isGenerating || !selectedFormat} className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg">
-                  {isGenerating ? <>
+                <Button
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
+                >
+                  {isGenerating ? (
+                    <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                       Creating Viral Content...
-                    </> : <>
+                    </>
+                  ) : (
+                    <>
                       <Sparkles className="w-5 h-5 mr-2" />
                       Generate Viral Content
-                    </>}
+                    </>
+                  )}
                 </Button>
 
-                {isGenerating && <div className="mt-4 space-y-3">
+                {isGenerating && (
+                  <div className="mt-4 space-y-3">
                     <Progress value={generationProgress} className="h-2" />
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-purple-300 flex items-center">
@@ -494,20 +617,24 @@ const Generate = () => {
                         ~{estimatedTime}s remaining
                       </span>
                     </div>
-                  </div>}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
 
           {/* Results Panel */}
           <div>
-            {generatedContent ? <div className="space-y-4">
+            {generatedContent ? (
+              <div className="space-y-4">
                 <div className="flex items-center space-x-2 mb-4">
                   <CheckCircle className="w-5 h-5 text-green-400" />
                   <span className="text-green-300 font-medium">Content generated successfully!</span>
                 </div>
                 <ContentResult content={generatedContent} />
-              </div> : <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
+              </div>
+            ) : (
+              <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
                 <CardContent className="text-center py-16">
                   <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
                   <p className="text-gray-300 text-lg mb-2">
@@ -517,10 +644,13 @@ const Generate = () => {
                     Choose from proven formats that drive engagement
                   </p>
                 </CardContent>
-              </Card>}
+              </Card>
+            )}
           </div>
         </div>
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default Generate;
