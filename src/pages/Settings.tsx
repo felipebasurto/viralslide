@@ -32,12 +32,12 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-4xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-300">
+            <Button variant="outline" size="sm" className="border-white/40 text-white hover:bg-white/20 hover:text-white transition-all duration-300 font-medium">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
@@ -52,13 +52,13 @@ const Settings = () => {
       <main className="max-w-4xl mx-auto px-6 py-8">
         <div className="space-y-8">
           {/* API Key Section */}
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-white flex items-center">
+              <CardTitle className="text-white flex items-center font-semibold">
                 <Key className="w-5 h-5 mr-2 text-pink-400" />
                 Deepseek API Configuration
               </CardTitle>
-              <CardDescription className="text-gray-300">
+              <CardDescription className="text-gray-200 font-medium">
                 Enter your Deepseek API key to enable AI content generation.
               </CardDescription>
             </CardHeader>
@@ -84,13 +84,13 @@ const Settings = () => {
           </Card>
 
           {/* System Prompt Section */}
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-white flex items-center">
+              <CardTitle className="text-white flex items-center font-semibold">
                 <FileText className="w-5 h-5 mr-2 text-purple-400" />
                 System Prompt
               </CardTitle>
-              <CardDescription className="text-gray-300">
+              <CardDescription className="text-gray-200 font-medium">
                 Describe your business, product, or service. This information will be used to personalize all generated content.
               </CardDescription>
             </CardHeader>

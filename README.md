@@ -1,73 +1,149 @@
-# Welcome to your Lovable project
+# ViralSlide 🚀
 
-## Project info
+**AI-Powered TikTok Slideshow Generator**
 
-**URL**: https://lovable.dev/projects/779034d8-fb13-42b5-b703-28699dd05da6
+Create scroll-stopping, viral TikTok content with proven formats and AI-generated hooks that drive engagement.
 
-## How can I edit this code?
+![ViralSlide Preview](https://via.placeholder.com/800x400/6366f1/ffffff?text=ViralSlide+Preview)
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+- **🤖 AI Content Generation**: Powered by Deepseek AI to create compelling slideshow content
+- **📊 Multiple Viral Formats**: Top 5 Tips, Common Errors, Recommendations, Before/After, and more
+- **🌍 Multi-Language Support**: Generate content in English and Spanish
+- **📈 Performance Tracking**: Monitor your TikTok videos' views, likes, comments, and shares
+- **🎨 Custom Formats**: Create your own unique viral content formats
+- **💡 Smart Optimization**: Get suggestions for visual content and engagement strategies
+- **📱 Responsive Design**: Beautiful, modern UI that works on all devices
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/779034d8-fb13-42b5-b703-28699dd05da6) and start prompting.
+## 🛠️ Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Routing**: React Router DOM
+- **Forms**: React Hook Form + Zod validation
+- **AI Integration**: Deepseek API
+- **State Management**: React hooks + localStorage
 
-**Use your preferred IDE**
+## 🚀 Quick Start
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js 18+ and npm
+- Deepseek API key (get one at [platform.deepseek.com](https://platform.deepseek.com/))
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd viralslide
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+4. **Open your browser**
+   Navigate to `http://localhost:8080`
+
+### Configuration
+
+1. Go to **Settings** in the app
+2. Enter your Deepseek API key
+3. Add your business information for personalized content
+4. Start generating viral content!
+
+## 📖 Usage
+
+### Generating Content
+
+1. **Choose a Format**: Select from proven viral formats like "Top 5 Tips" or "Common Errors"
+2. **Enter Your Topic**: Describe what you want to create content about
+3. **Select Language**: Choose English or Spanish
+4. **Generate**: Let AI create your viral slideshow content
+5. **Copy & Use**: Copy the generated content for your TikTok videos
+
+### Tracking Performance
+
+1. **Add TikTok URLs**: Paste your TikTok video links in the Dashboard
+2. **Monitor Metrics**: Track views, likes, comments, and shares
+3. **Analyze Performance**: See which content formats perform best
+4. **Optimize Strategy**: Use insights to improve future content
+
+## 🎯 Viral Formats Available
+
+- **Top 5 Tips**: Share your best advice in your niche
+- **Common Errors**: Highlight mistakes people make
+- **Recommendations**: Suggest tools, products, or strategies
+- **Before vs After**: Show transformations or improvements
+- **Myths vs Facts**: Debunk common misconceptions
+- **Beginner's Guide**: Essential steps for newcomers
+- **Custom Format**: Create your own unique viral format
+
+## 📁 Project Structure
+
+```
+viralslide/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── ui/             # shadcn/ui components
+│   │   └── ContentResult.tsx
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility functions
+│   ├── pages/              # Route components
+│   │   ├── Index.tsx       # Landing page
+│   │   ├── Generate.tsx    # Content generation
+│   │   ├── Dashboard.tsx   # Performance tracking
+│   │   └── Settings.tsx    # Configuration
+│   ├── App.tsx             # Main app component
+│   └── main.tsx            # App entry point
+├── public/                 # Static assets
+└── package.json           # Dependencies and scripts
 ```
 
-**Edit a file directly in GitHub**
+## 🔧 Available Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run build:dev` - Build in development mode
+- `npm run lint` - Run ESLint
+- `npm run preview` - Preview production build
 
-**Use GitHub Codespaces**
+## 🌟 Contributing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## What technologies are used for this project?
+## 📄 License
 
-This project is built with:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🤝 Support
 
-## How can I deploy this project?
+If you have any questions or need help:
 
-Simply open [Lovable](https://lovable.dev/projects/779034d8-fb13-42b5-b703-28699dd05da6) and click on Share -> Publish.
+- Open an issue on GitHub
+- Check the documentation
+- Review the code examples in the project
 
-## Can I connect a custom domain to my Lovable project?
+## 🎉 Acknowledgments
 
-Yes, you can!
+- Built with [shadcn/ui](https://ui.shadcn.com/) for beautiful components
+- Powered by [Deepseek AI](https://platform.deepseek.com/) for content generation
+- Styled with [Tailwind CSS](https://tailwindcss.com/) for modern design
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+**Made with ❤️ for content creators who want to go viral on TikTok**

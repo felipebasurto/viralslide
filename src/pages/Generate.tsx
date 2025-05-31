@@ -441,12 +441,12 @@ const Generate = () => {
   const selectedFormatInfo = viralFormats.find(f => f.id === selectedFormat);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:text-white transition-all duration-300 bg-purple-600/20 hover:bg-purple-500/30 backdrop-blur-sm">
+            <Button variant="outline" size="sm" className="border-white/40 text-white hover:text-white transition-all duration-300 bg-white/10 hover:bg-white/20 backdrop-blur-sm font-medium">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
@@ -462,13 +462,13 @@ const Generate = () => {
           {/* Generation Panel */}
           <div className="space-y-6">
             {/* Language Selection */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-white flex items-center font-semibold">
                   <Globe className="w-5 h-5 mr-2 text-pink-400" />
                   Language
                 </CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-gray-200 font-medium">
                   Choose your content language
                 </CardDescription>
               </CardHeader>
@@ -489,14 +489,14 @@ const Generate = () => {
             </Card>
 
             {/* Format Selection */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-white flex items-center font-semibold">
                   <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
                   Choose Format
-                  <Info className="w-4 h-4 ml-2 text-gray-400" />
+                  <Info className="w-4 h-4 ml-2 text-gray-300" />
                 </CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-gray-200 font-medium">
                   Select a proven viral format for your content
                 </CardDescription>
               </CardHeader>
