@@ -32,17 +32,17 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-black">
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-4xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-300">
+            <Button variant="outline" size="sm" className="border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">
             Settings
           </h1>
         </div>
@@ -52,13 +52,13 @@ const Settings = () => {
       <main className="max-w-4xl mx-auto px-6 py-8">
         <div className="space-y-8">
           {/* API Key Section */}
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
-                <Key className="w-5 h-5 mr-2 text-pink-400" />
+                <Key className="w-5 h-5 mr-2 text-pink-500" />
                 Deepseek API Configuration
               </CardTitle>
-              <CardDescription className="text-gray-300">
+              <CardDescription className="text-gray-400">
                 Enter your Deepseek API key to enable AI content generation.
               </CardDescription>
             </CardHeader>
@@ -71,11 +71,11 @@ const Settings = () => {
                   placeholder="sk-..."
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400"
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-pink-500 focus:ring-pink-500"
                 />
                 <p className="text-sm text-gray-400 mt-2">
                   Your API key is stored locally and never shared. Get your key from{" "}
-                  <a href="https://platform.deepseek.com/" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">
+                  <a href="https://platform.deepseek.com/" target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:text-pink-400 hover:underline">
                     platform.deepseek.com
                   </a>
                 </p>
@@ -84,13 +84,13 @@ const Settings = () => {
           </Card>
 
           {/* System Prompt Section */}
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
-                <FileText className="w-5 h-5 mr-2 text-purple-400" />
+                <FileText className="w-5 h-5 mr-2 text-pink-500" />
                 System Prompt
               </CardTitle>
-              <CardDescription className="text-gray-300">
+              <CardDescription className="text-gray-400">
                 Describe your business, product, or service. This information will be used to personalize all generated content.
               </CardDescription>
             </CardHeader>
@@ -102,7 +102,7 @@ const Settings = () => {
                   placeholder="Example: I run a fitness coaching business focused on helping busy professionals lose weight through home workouts. My target audience is 25-45 year olds who struggle with finding time to exercise..."
                   value={systemPrompt}
                   onChange={(e) => setSystemPrompt(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 min-h-[150px]"
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-pink-500 focus:ring-pink-500 min-h-[150px]"
                 />
                 <p className="text-sm text-gray-400 mt-2">
                   Include details about your product/service, target audience, unique selling points, and any specific messaging you want to emphasize.
@@ -115,7 +115,7 @@ const Settings = () => {
           <div className="flex justify-end">
             <Button 
               onClick={handleSave}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-8 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
+              className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white px-8 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105 shadow-xl border-0"
             >
               <Save className="w-5 h-5 mr-2" />
               Save Settings
