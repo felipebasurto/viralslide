@@ -62,24 +62,6 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				// TikTok Brand Colors
-				tiktok: {
-					pink: '#ff0050',
-					red: '#fe2c55',
-					black: '#000000',
-					white: '#ffffff',
-					gray: {
-						100: '#f1f1f2',
-						200: '#e1e2e3',
-						300: '#c7c8cc',
-						400: '#9ca0a8',
-						500: '#6a7280',
-						600: '#4b5563',
-						700: '#374151',
-						800: '#1f2937',
-						900: '#111827'
-					}
 				}
 			},
 			borderRadius: {

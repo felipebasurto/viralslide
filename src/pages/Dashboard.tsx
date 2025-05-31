@@ -257,17 +257,17 @@ const Dashboard = () => {
   const stats = calculateStats();
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300">
+            <Button variant="outline" size="sm" className="border-purple-400 text-purple-400 hover:text-white transition-all duration-300 bg-purple-600/20 hover:bg-purple-500/30 backdrop-blur-sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
             TikTok Dashboard
           </h1>
         </div>
@@ -275,13 +275,13 @@ const Dashboard = () => {
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
         {/* Add Video Section */}
-        <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
-              <Plus className="w-5 h-5 mr-2 text-pink-500" />
+              <Plus className="w-5 h-5 mr-2 text-pink-400" />
               Add TikTok Video
             </CardTitle>
-            <CardDescription className="text-gray-400">
+            <CardDescription className="text-gray-300">
               Enter a TikTok video URL to track its performance
             </CardDescription>
           </CardHeader>
@@ -296,7 +296,7 @@ const Dashboard = () => {
                   placeholder="https://tiktok.com/@username/video/1234567890..."
                   value={newVideoUrl}
                   onChange={(e) => setNewVideoUrl(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-pink-500 focus:ring-pink-500"
+                  className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
                   disabled={isLoading}
                 />
               </div>
@@ -304,7 +304,7 @@ const Dashboard = () => {
                 <Button
                   onClick={addVideo}
                   disabled={isLoading || !newVideoUrl.trim()}
-                  className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white transition-all duration-300 disabled:opacity-50 border-0"
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white transition-all duration-300 disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Video"}
                 </Button>
@@ -316,51 +316,51 @@ const Dashboard = () => {
         {/* Stats Overview */}
         {videos.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="p-4 text-center">
-                <BarChart3 className="w-8 h-8 text-pink-500 mx-auto mb-2" />
+                <BarChart3 className="w-8 h-8 text-purple-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{stats.videoCount}</div>
-                <div className="text-xs text-gray-400">Videos</div>
+                <div className="text-xs text-gray-300">Videos</div>
               </CardContent>
             </Card>
             
-            <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="p-4 text-center">
                 <Eye className="w-8 h-8 text-blue-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{formatNumber(stats.totalViews)}</div>
-                <div className="text-xs text-gray-400">Total Views</div>
+                <div className="text-xs text-gray-300">Total Views</div>
               </CardContent>
             </Card>
             
-            <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="p-4 text-center">
                 <Heart className="w-8 h-8 text-red-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{formatNumber(stats.totalLikes)}</div>
-                <div className="text-xs text-gray-400">Total Likes</div>
+                <div className="text-xs text-gray-300">Total Likes</div>
               </CardContent>
             </Card>
             
-            <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="p-4 text-center">
                 <MessageCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{formatNumber(stats.totalComments)}</div>
-                <div className="text-xs text-gray-400">Total Comments</div>
+                <div className="text-xs text-gray-300">Total Comments</div>
               </CardContent>
             </Card>
             
-            <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="p-4 text-center">
                 <TrendingUp className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{formatNumber(stats.totalShares)}</div>
-                <div className="text-xs text-gray-400">Total Shares</div>
+                <div className="text-xs text-gray-300">Total Shares</div>
               </CardContent>
             </Card>
             
-            <Card className="bg-gray-900 border-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardContent className="p-4 text-center">
-                <BarChart3 className="w-8 h-8 text-pink-500 mx-auto mb-2" />
+                <BarChart3 className="w-8 h-8 text-pink-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{stats.averageEngagement.toFixed(1)}%</div>
-                <div className="text-xs text-gray-400">Avg Engagement</div>
+                <div className="text-xs text-gray-300">Avg Engagement</div>
               </CardContent>
             </Card>
           </div>
@@ -368,9 +368,9 @@ const Dashboard = () => {
 
         {/* Videos List */}
         {videos.length === 0 ? (
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
             <CardContent className="text-center py-16">
-              <BarChart3 className="w-16 h-16 text-pink-500 mx-auto mb-4 opacity-50" />
+              <BarChart3 className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
               <p className="text-gray-300 text-lg mb-2">
                 No TikTok videos tracked yet
               </p>
@@ -383,13 +383,13 @@ const Dashboard = () => {
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-white mb-4">Your TikTok Videos</h2>
             {videos.map((video) => (
-              <Card key={video.id} className="bg-gray-900 border-gray-800 hover:border-pink-500/50 hover:bg-gray-800 transition-all duration-200">
+              <Card key={video.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-200">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <h3 className="text-white font-medium">{video.title}</h3>
-                        <Badge variant="secondary" className="bg-pink-500/20 text-pink-300 border-pink-500/30">
+                        <Badge variant="secondary" className="bg-purple-500/20 text-purple-300">
                           Added {formatDate(video.dateAdded)}
                         </Badge>
                       </div>
@@ -428,7 +428,7 @@ const Dashboard = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => copyToClipboard(video.url, `Video ${video.id}`)}
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white hover:border-gray-500"
+                        className="border-purple-400/20 text-purple-300 hover:bg-purple-400/10"
                       >
                         {copiedId === `Video ${video.id}` ? (
                           <CheckCircle2 className="w-4 h-4" />
@@ -440,7 +440,7 @@ const Dashboard = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => window.open(video.url, '_blank')}
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white hover:border-gray-500"
+                        className="border-blue-400/20 text-blue-300 hover:bg-blue-400/10"
                       >
                         <ExternalLink className="w-4 h-4" />
                       </Button>
@@ -449,7 +449,7 @@ const Dashboard = () => {
                         variant="outline"
                         onClick={() => refreshVideo(video.id)}
                         disabled={isLoading}
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white hover:border-gray-500"
+                        className="border-green-400/20 text-green-300 hover:bg-green-400/10"
                       >
                         <TrendingUp className="w-4 h-4" />
                       </Button>
@@ -457,7 +457,7 @@ const Dashboard = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => removeVideo(video.id)}
-                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white hover:border-red-500"
+                        className="border-red-400/20 text-red-300 hover:bg-red-400/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
