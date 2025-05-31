@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { ArrowLeft, Sparkles, Loader2, Globe } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ContentResult } from "@/components/ContentResult";
 
@@ -38,18 +39,63 @@ interface GeneratedContent {
 }
 
 const viralFormats = [
-  { id: "top5tips", title: "Top 5 Tips", description: "Share your best 5 tips about your niche", emoji: "🔥" },
-  { id: "commonerrors", title: "Common Errors", description: "Highlight mistakes people make in your field", emoji: "⚠️" },
-  { id: "recommendations", title: "Recommendations", description: "Recommend tools, products, or strategies", emoji: "⭐" },
-  { id: "beforeafter", title: "Before vs After", description: "Show transformation or improvement", emoji: "✨" },
-  { id: "myths", title: "Myths vs Facts", description: "Debunk common misconceptions", emoji: "💡" },
-  { id: "beginner", title: "Beginner's Guide", description: "Essential steps for newcomers", emoji: "🎯" },
+  { 
+    id: "top5tips", 
+    title: "Top 5 Tips", 
+    description: "Share your best 5 tips about your niche", 
+    emoji: "🔥",
+    example: "5 morning habits that changed my life"
+  },
+  { 
+    id: "commonerrors", 
+    title: "Common Errors", 
+    description: "Highlight mistakes people make in your field", 
+    emoji: "⚠️",
+    example: "mistakes killing your productivity"
+  },
+  { 
+    id: "recommendations", 
+    title: "Recommendations", 
+    description: "Recommend tools, products, or strategies", 
+    emoji: "⭐",
+    example: "tools every entrepreneur needs"
+  },
+  { 
+    id: "beforeafter", 
+    title: "Before vs After", 
+    description: "Show transformation or improvement", 
+    emoji: "✨",
+    example: "my morning routine transformation"
+  },
+  { 
+    id: "myths", 
+    title: "Myths vs Facts", 
+    description: "Debunk common misconceptions", 
+    emoji: "💡",
+    example: "productivity myths debunked"
+  },
+  { 
+    id: "beginner", 
+    title: "Beginner's Guide", 
+    description: "Essential steps for newcomers", 
+    emoji: "🎯",
+    example: "getting started with meditation"
+  },
 ];
 
 const languages = [
   { code: "en", name: "English" },
   { code: "es", name: "Español" },
 ];
+
+const topicSuggestions = {
+  top5tips: ["productivity hacks", "morning routines", "healthy habits", "time management", "study techniques"],
+  commonerrors: ["workout mistakes", "business failures", "coding errors", "diet misconceptions", "social media blunders"],
+  recommendations: ["productivity apps", "books to read", "workout equipment", "learning resources", "business tools"],
+  beforeafter: ["morning routine", "workspace setup", "fitness journey", "skill development", "mindset shift"],
+  myths: ["fitness myths", "productivity myths", "money myths", "health myths", "learning myths"],
+  beginner: ["meditation basics", "investing 101", "cooking essentials", "fitness fundamentals", "coding basics"]
+};
 
 /**
  * Demo content generator for when the API is unavailable.
@@ -171,10 +217,13 @@ async function fetchGeneratedContent(
   systemPrompt: string,
   formatId: string,
   customTopic: string,
-  language: string
+  language: string,
+  onProgress?: (stage: string) => void
 ): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find((f) => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
+  
+  onProgress?.("Preparing viral content strategy...");
   
   const languageInstruction = language === "es" 
     ? "Respond in Spanish. All content should be in Spanish."
@@ -235,7 +284,7 @@ JSON format:
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
 }`;
 
-  console.log("Sending request to Deepseek API...");
+  onProgress?.("Generating viral hook...");
 
   const response = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
@@ -251,6 +300,8 @@ JSON format:
     }),
   });
 
+  onProgress?.("Processing content slides...");
+
   if (!response.ok) {
     const errorText = await response.text();
     console.error("API request failed:", response.status, errorText);
@@ -258,10 +309,10 @@ JSON format:
   }
 
   const apiResponse = await response.json();
-  console.log("API Response:", apiResponse);
+  
+  onProgress?.("Finalizing viral content...");
   
   const content = apiResponse.choices?.[0]?.message?.content || "";
-  console.log("Raw content:", content);
   
   if (!content) {
     throw new Error("Empty response from API");
@@ -280,7 +331,6 @@ JSON format:
   }
   
   jsonString = jsonString.substring(jsonStart, jsonEnd + 1);
-  console.log("Extracted JSON:", jsonString);
 
   try {
     const parsed = JSON.parse(jsonString);
@@ -308,7 +358,50 @@ const Generate = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
+  const [generationProgress, setGenerationProgress] = useState<number>(0);
+  const [currentStage, setCurrentStage] = useState<string>("");
+  const [estimatedTime, setEstimatedTime] = useState<number>(0);
   const { toast } = useToast();
+
+  // Load saved preferences
+  useEffect(() => {
+    const savedFormat = localStorage.getItem("preferred_format");
+    const savedLanguage = localStorage.getItem("preferred_language");
+    if (savedFormat && viralFormats.find(f => f.id === savedFormat)) {
+      setSelectedFormat(savedFormat);
+    }
+    if (savedLanguage) {
+      setSelectedLanguage(savedLanguage);
+    }
+  }, []);
+
+  // Save preferences
+  useEffect(() => {
+    if (selectedFormat) {
+      localStorage.setItem("preferred_format", selectedFormat);
+    }
+  }, [selectedFormat]);
+
+  useEffect(() => {
+    localStorage.setItem("preferred_language", selectedLanguage);
+  }, [selectedLanguage]);
+
+  const handleProgress = (stage: string) => {
+    setCurrentStage(stage);
+    if (stage.includes("Preparing")) {
+      setGenerationProgress(25);
+      setEstimatedTime(15);
+    } else if (stage.includes("Generating")) {
+      setGenerationProgress(50);
+      setEstimatedTime(10);
+    } else if (stage.includes("Processing")) {
+      setGenerationProgress(75);
+      setEstimatedTime(5);
+    } else if (stage.includes("Finalizing")) {
+      setGenerationProgress(90);
+      setEstimatedTime(2);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!selectedFormat) {
@@ -324,22 +417,38 @@ const Generate = () => {
     const systemPrompt = localStorage.getItem("system_prompt") || "";
 
     setIsGenerating(true);
+    setGenerationProgress(0);
+    setEstimatedTime(20);
 
     // Fallback to demo content if no API key or system prompt
     if (!apiKey || !systemPrompt) {
-      const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
-      setGeneratedContent(demo);
-      toast({
-        title: "Demo content generated! 🎬",
-        description: "Using demo content. Add your API key in settings for personalized results.",
-      });
-      setIsGenerating(false);
+      handleProgress("Preparing demo content...");
+      setTimeout(() => {
+        handleProgress("Generating viral hook...");
+        setTimeout(() => {
+          handleProgress("Processing content slides...");
+          setTimeout(() => {
+            handleProgress("Finalizing viral content...");
+            setTimeout(() => {
+              const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
+              setGeneratedContent(demo);
+              setGenerationProgress(100);
+              toast({
+                title: "Demo content generated! 🎬",
+                description: "Using demo content. Add your API key in settings for personalized results.",
+              });
+              setIsGenerating(false);
+            }, 500);
+          }, 1000);
+        }, 1000);
+      }, 1000);
       return;
     }
 
     try {
-      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage);
+      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, handleProgress);
       setGeneratedContent(content);
+      setGenerationProgress(100);
       toast({
         title: "Viral content generated! 🔥",
         description: "Your slideshow with viral hook is ready to go viral!",
@@ -349,14 +458,23 @@ const Generate = () => {
       // Fallback to demo if API call or parsing fails
       const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
       setGeneratedContent(demo);
+      setGenerationProgress(100);
       toast({
         title: "Demo content generated! 🎬",
         description: "API unavailable or returned invalid JSON. Using demo content instead.",
       });
     } finally {
       setIsGenerating(false);
+      setCurrentStage("");
+      setEstimatedTime(0);
     }
   };
+
+  const handleTopicSuggestion = (suggestion: string) => {
+    setCustomTopic(suggestion);
+  };
+
+  const selectedFormatInfo = viralFormats.find(f => f.id === selectedFormat);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -390,6 +508,9 @@ const Generate = () => {
                   <Globe className="w-5 h-5 mr-2 text-pink-400" />
                   Language
                 </CardTitle>
+                <CardDescription className="text-gray-300">
+                  Choose your content language
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
@@ -413,15 +534,19 @@ const Generate = () => {
                 <CardTitle className="text-white flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
                   Choose Format
+                  <Info className="w-4 h-4 ml-2 text-gray-400" />
                 </CardTitle>
+                <CardDescription className="text-gray-300">
+                  Select a proven viral format for your content
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   {viralFormats.map((format) => (
                     <Button
                       key={format.id}
                       variant={selectedFormat === format.id ? "default" : "outline"}
-                      className={`p-4 h-auto flex flex-col items-center space-y-2 transition-all duration-300 ${
+                      className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
                         selectedFormat === format.id
                           ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600"
                           : "border-purple-300 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-transparent"
@@ -429,61 +554,112 @@ const Generate = () => {
                       onClick={() => setSelectedFormat(format.id)}
                     >
                       <span className="text-2xl">{format.emoji}</span>
-                      <span className="text-sm font-medium text-center">{format.title}</span>
+                      <div className="flex-1 text-left">
+                        <div className="font-medium">{format.title}</div>
+                        <div className="text-xs opacity-80 mt-1">{format.description}</div>
+                        <div className="text-xs italic opacity-60 mt-1">e.g. "{format.example}"</div>
+                      </div>
                     </Button>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Custom Topic */}
+            {/* Custom Topic with Suggestions */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardHeader>
                 <CardTitle className="text-white">Custom Topic</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Optional: Specify a particular angle
+                  Optional: Specify a particular angle or topic
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <Input
                   placeholder="e.g., morning routines, productivity..."
                   value={customTopic}
                   onChange={(e) => setCustomTopic(e.target.value)}
                   className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
                 />
+                
+                {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && (
+                  <div>
+                    <Label className="text-white text-sm mb-2 block">Popular topics for {selectedFormatInfo?.title}:</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map((suggestion) => (
+                        <Badge
+                          key={suggestion}
+                          variant="secondary"
+                          className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 cursor-pointer transition-colors"
+                          onClick={() => handleTopicSuggestion(suggestion)}
+                        >
+                          {suggestion}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
-            {/* Generate Button */}
-            <Button
-              onClick={handleGenerate}
-              disabled={isGenerating || !selectedFormat}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Creating Viral Content...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Generate Viral Content
-                </>
-              )}
-            </Button>
+            {/* Generate Button with Progress */}
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <CardContent className="pt-6">
+                <Button
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !selectedFormat}
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Creating Viral Content...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Generate Viral Content
+                    </>
+                  )}
+                </Button>
+
+                {isGenerating && (
+                  <div className="mt-4 space-y-3">
+                    <Progress value={generationProgress} className="h-2" />
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-purple-300 flex items-center">
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                        {currentStage}
+                      </span>
+                      <span className="text-gray-400 flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        ~{estimatedTime}s remaining
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Results Panel */}
           <div>
             {generatedContent ? (
-              <ContentResult content={generatedContent} />
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 mb-4">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-green-300 font-medium">Content generated successfully!</span>
+                </div>
+                <ContentResult content={generatedContent} />
+              </div>
             ) : (
               <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
                 <CardContent className="text-center py-16">
                   <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
-                  <p className="text-gray-300 text-lg">
+                  <p className="text-gray-300 text-lg mb-2">
                     Select a format and generate viral content
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    Choose from proven formats that drive engagement
                   </p>
                 </CardContent>
               </Card>
