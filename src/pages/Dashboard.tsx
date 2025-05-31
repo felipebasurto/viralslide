@@ -262,7 +262,7 @@ const Dashboard = () => {
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-white/40 text-white hover:text-white transition-all duration-300 bg-white/10 hover:bg-white/20 backdrop-blur-sm font-medium">
+            <Button variant="outline" size="sm" className="border-white text-white hover:text-gray-900 transition-all duration-300 bg-white/20 hover:bg-white backdrop-blur-sm font-medium shadow-md">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>

@@ -446,7 +446,7 @@ const Generate = () => {
       <header className="relative z-10 p-6">
         <div className="max-w-6xl mx-auto flex items-center space-x-4">
           <Link to="/">
-            <Button variant="outline" size="sm" className="border-white/40 text-white hover:text-white transition-all duration-300 bg-white/10 hover:bg-white/20 backdrop-blur-sm font-medium">
+            <Button variant="outline" size="sm" className="border-white text-white hover:text-gray-900 transition-all duration-300 bg-white/20 hover:bg-white backdrop-blur-sm font-medium shadow-md">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
@@ -508,8 +508,8 @@ const Generate = () => {
                       variant={selectedFormat === format.id ? "default" : "outline"}
                       className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
                         selectedFormat === format.id
-                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600"
-                          : "border-purple-300/50 text-purple-200 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white bg-purple-800/20 backdrop-blur-sm"
+                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600 font-medium"
+                          : "border-white/40 text-white hover:bg-white/15 hover:border-white/60 hover:text-white bg-white/10 backdrop-blur-sm font-medium"
                       }`}
                       onClick={() => setSelectedFormat(format.id)}
                     >
@@ -571,7 +571,7 @@ const Generate = () => {
                         <Badge
                           key={suggestion}
                           variant="secondary"
-                          className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 cursor-pointer transition-colors"
+                          className="bg-purple-500/30 text-purple-200 hover:bg-purple-500/40 cursor-pointer transition-colors border border-purple-400/30"
                           onClick={() => handleTopicSuggestion(suggestion)}
                         >
                           {suggestion}
@@ -608,11 +608,11 @@ const Generate = () => {
                   <div className="mt-4 space-y-3">
                     <Progress value={generationProgress} className="h-2" />
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-purple-300 flex items-center">
+                      <span className="text-purple-200 flex items-center font-medium">
                         <Loader2 className="w-3 h-3 mr-1 animate-spin" />
                         {currentStage}
                       </span>
-                      <span className="text-gray-400 flex items-center">
+                      <span className="text-gray-300 flex items-center font-medium">
                         <Clock className="w-3 h-3 mr-1" />
                         ~{estimatedTime}s remaining
                       </span>
@@ -629,18 +629,18 @@ const Generate = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-2 mb-4">
                   <CheckCircle className="w-5 h-5 text-green-400" />
-                  <span className="text-green-300 font-medium">Content generated successfully!</span>
+                  <span className="text-green-200 font-semibold">Content generated successfully!</span>
                 </div>
                 <ContentResult content={generatedContent} />
               </div>
             ) : (
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20 h-full flex items-center justify-center">
+              <Card className="bg-white/15 backdrop-blur-lg border-white/40 h-full flex items-center justify-center shadow-xl">
                 <CardContent className="text-center py-16">
-                  <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
-                  <p className="text-gray-300 text-lg mb-2">
+                  <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-60" />
+                  <p className="text-gray-200 text-lg mb-2 font-medium">
                     Select a format and generate viral content
                   </p>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-300 text-sm font-medium">
                     Choose from proven formats that drive engagement
                   </p>
                 </CardContent>

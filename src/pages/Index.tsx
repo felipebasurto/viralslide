@@ -36,7 +36,7 @@ const Index = () => {
               </Link>
               
               <Link to="/dashboard">
-                <Button size="lg" variant="outline" className="border-white/40 text-white hover:text-white transition-all duration-300 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-lg px-8 py-6 font-semibold">
+                <Button size="lg" variant="outline" className="border-white text-white hover:text-gray-900 transition-all duration-300 bg-white/20 hover:bg-white backdrop-blur-sm text-lg px-8 py-6 font-semibold shadow-lg">
                   <BarChart3 className="w-6 h-6 mr-2" />
                   View Dashboard
                 </Button>
@@ -146,12 +146,12 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <Card className="bg-gradient-to-r from-purple-600/30 to-pink-600/30 backdrop-blur-lg border-white/30 shadow-2xl">
+        <Card className="bg-gradient-to-r from-purple-600/80 to-pink-600/80 backdrop-blur-lg border-white/50 shadow-2xl hover:from-purple-600/90 hover:to-pink-600/90 transition-all duration-300">
           <CardContent className="py-12">
-            <h3 className="text-3xl font-bold text-white mb-4">
+            <h3 className="text-3xl font-bold text-white mb-4 drop-shadow-lg">
               Ready to Create Viral Content?
             </h3>
-            <p className="text-gray-200 text-lg mb-8 font-medium">
+            <p className="text-gray-100 text-lg mb-8 font-medium drop-shadow-md">
               Join thousands of creators using AI to generate engaging TikTok content
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -162,7 +162,7 @@ const Index = () => {
                 </Button>
               </Link>
               <Link to="/settings">
-                <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/20 transition-all duration-300 text-lg px-8 py-6 font-semibold">
+                <Button size="lg" variant="outline" className="border-white text-white hover:text-gray-900 transition-all duration-300 bg-white/20 hover:bg-white text-lg px-8 py-6 font-semibold shadow-lg">
                   <Settings className="w-5 h-5 mr-2" />
                   Configure Settings
                 </Button>
