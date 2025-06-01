@@ -215,25 +215,34 @@ ${languageInstruction}
 
 ${viralHooksExamples}
 
-CRITICAL INSTRUCTIONS FOR ORGANIC CONTENT:
-- DO NOT mention any specific products, apps, or services in the content
-- This should be pure educational/entertainment content that provides real value
-- NO product promotion whatsoever in the slides
-- Focus on genuine insights, tips, and value for the audience
-- Make it feel like authentic social media content, not an advertisement
+INSTRUCTIONS FOR ORGANIC EDUCATIONAL SLIDES
 
-STRUCTURE REQUIRED:
-1. HOOK (slide 1): The most viral, attention-grabbing opening possible. This is CRITICAL for success.
-2. CONTENT SLIDES (slides 2-6): 5 slides of genuine, actionable value - NO PRODUCT MENTIONS
-3. CTA (slide 7): ORGANIC engagement call-to-action (ask for comments, shares, experiences - NO product promotion)
+CRITICAL GUIDELINES  
+- avoid any language that implies you’re selling or promoting a service/product  
+- content must feel like a genuine, free resource—no “buy now,” no “special offer,” no “limited time,” etc.  
+- focus solely on sharing insights, practical tips, or thought-provoking ideas that readers can use immediately  
+- tone should be conversational, authentic, lowercase, and free of emojis or markdown  
 
-CRITICAL REQUIREMENTS:
-- HOOK must be scroll-stopping, use psychological triggers from the examples
-- Focus on providing REAL VALUE in content slides
-- Organic tone, lowercase text, no emojis or markdown in the text
-- Educational first, NO promotional content
-- Make the hook irresistible and curiosity-driven
-- CTA should encourage engagement (comments, shares, questions) NOT product sales
+STRUCTURE (7 SLIDES TOTAL)  
+1. **HOOK (slide 1)**  
+   - one scroll-stopping sentence that sparks curiosity or challenges a common belief  
+   - use psychological triggers (e.g., surprising fact, counterintuitive statement, emotional appeal)  
+   - do not hint at a product or service—make it feel like a free insight  
+
+2. **CONTENT SLIDES (slides 2–6)**  
+   - five slides of purely actionable, no-fluff advice or ideas  
+   - each slide must present one standalone “aha” moment or practical tactic  
+   - avoid any reference to “our tool,” “our solution,” “download,” “sign up,” etc.  
+   - write in lowercase; keep sentences short, clear, and conversational  
+
+3. **CTA (slide 7)**  
+   - encourage organic engagement: ask a question or invite readers to comment/share their thoughts or experiences  
+   - do not ask for clicks, sign-ups, or purchases  
+
+EXAMPLE ADJUSTMENTS  
+- if your original hook sounded like “ready to transform your workflow with our app?”, change it to “most people waste hours on busywork without realizing it”  
+- replace any slide that hints at a product with a slide that simply explains a new perspective, a statistic, or a small ritual readers can try today  
+- the CTA should never “learn more” or “book a call” but something like “what’s your experience? share below”
 
 JSON format:
 {
