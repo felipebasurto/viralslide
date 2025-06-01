@@ -96,7 +96,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
   if (language === "es") {
     const baseContent = {
       format: formatInfo?.title || formatId,
-      searchTerms: ["padre leyendo cuento a niño", "libro infantil personalizado", "app de cuentos con inteligencia artificial", "niño feliz escuchando cuento personalizado", "familia unida contando historias", "niño durmiendo pacíficamente", "padres relajados después del cuento"]
+      searchTerms: ["padre leyendo cuento a niño", "libro infantil personalizado", "niño feliz escuchando cuento", "familia unida contando historias", "niño durmiendo pacíficamente", "padres relajados después del cuento", "biblioteca familiar"]
     };
     switch (formatId) {
       case "top5tips":
@@ -105,7 +105,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
           title: "5 secretos para que tu hijo se duerma en minutos",
           hook: "¿sabías que hay una forma de hacer que tu hijo se duerma en menos de 15 minutos cada noche?",
           slides: ["consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe", "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro", "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío", "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente", "consejo 5: mantén la historia entre 5-10 minutos máximo para evitar sobreestimulación"],
-          cta: "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
+          cta: "¿qué técnica vas a probar esta noche? cuéntame en los comentarios cómo te va"
         };
       case "custom":
         return {
@@ -113,7 +113,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
           title: "formato personalizado: mi estrategia única",
           hook: "este formato personalizado está diseñado para tu audiencia específica",
           slides: ["elemento 1: adapta tu mensaje a tu nicho", "elemento 2: usa ejemplos específicos de tu experiencia", "elemento 3: incluye datos relevantes para tu audiencia", "elemento 4: añade tu toque personal único", "elemento 5: termina con tu propuesta de valor"],
-          cta: "prueba tu formato personalizado y ve los resultados"
+          cta: "comparte tu experiencia en los comentarios - ¿qué funciona para ti?"
         };
       default:
         return {
@@ -121,7 +121,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
           title: "la rutina nocturna que cambió todo para nosotros",
           hook: "deja de desplazarte si quieres descubrir cómo transformamos el caos nocturno en tiempo familiar pacífico",
           slides: ["antes: peleas por qué libro leer, rabietas constantes, dormir tomaba 2 horas", "el cambio: empezamos a crear nuevas historias juntos cada noche", "a los niños les encanta ser el héroe de su propia aventura personalizada", "a los padres les encanta enseñar valores a través de historias únicas", "resultado: no más 'léelo otra vez' porque cada historia es especial y nueva"],
-          cta: "prueba nuestro generador gratuito - crea cuentos personalizados en segundos"
+          cta: "¿tu familia también tiene rituales nocturnos especiales? comparte en comentarios"
         };
     }
   }
@@ -129,7 +129,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
   // English content
   const baseContent = {
     format: formatInfo?.title || formatId,
-    searchTerms: ["parent reading bedtime story to child", "children's book with personalized character", "child psychology research about sleep", "happy child listening to custom story", "family bonding with storytelling", "peaceful child sleeping", "relaxed parents after bedtime"]
+    searchTerms: ["parent reading bedtime story to child", "children's book with personalized character", "child psychology research about sleep", "happy child listening to custom story", "family bonding with storytelling", "peaceful child sleeping", "cozy reading nook"]
   };
   switch (formatId) {
     case "top5tips":
@@ -138,7 +138,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         title: "5 psychology-backed bedtime tips that actually work",
         hook: "what if I told you there's a simple way to get your child to sleep in under 15 minutes every night?",
         slides: ["tip 1: make them the hero - research shows kids focus 3x longer when they're the protagonist", "tip 2: use the same opening phrase every night to trigger their brain's sleep mode", "tip 3: give them control within boundaries - let them choose the setting or one character trait", "tip 4: always end with a 'sleepy resolution' where the main character winds down peacefully", "tip 5: keep stories 5-10 minutes max to avoid overstimulation before sleep"],
-        cta: "try our free ai story generator - create personalized bedtime stories in seconds"
+        cta: "which tip are you trying tonight? let me know in the comments how it goes"
       };
     case "custom":
       return {
@@ -146,7 +146,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         title: "custom format: my unique viral strategy",
         hook: "this custom format is designed specifically for your audience and goals",
         slides: ["element 1: tailor your message to your specific niche", "element 2: use examples from your personal experience", "element 3: include data points relevant to your audience", "element 4: add your unique perspective or twist", "element 5: end with your specific value proposition"],
-        cta: "try your custom format and watch the engagement soar"
+        cta: "share your own experience in the comments - what works for you?"
       };
     case "commonerrors":
       return {
@@ -154,7 +154,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         title: "bedtime mistakes that keep kids awake (backed by sleep research)",
         hook: "stop scrolling - you need to see this if you're struggling with bedtime routines",
         slides: ["mistake 1: exciting plots before bed - action stories increase cortisol and delay sleep by 45 minutes", "mistake 2: inconsistent routine - your child's brain needs the same sequence to release melatonin", "mistake 3: generic characters - kids disconnect when they can't relate to the protagonist", "mistake 4: bright screens during story time - blue light blocks melatonin for 2 hours", "the fix: calming stories where your child is the sleepy hero learning to love bedtime"],
-        cta: "try stories with personalized characters that teach healthy sleep habits"
+        cta: "what bedtime challenges are you facing? let's solve them together in the comments"
       };
     default:
       return {
@@ -162,7 +162,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
         title: "how we cut bedtime from 2 hours to 15 minutes (real parent story)",
         hook: "imagine if you could transform your chaotic bedtime into peaceful family time in just 2 weeks",
         slides: ["before: tantrums, 'just one more story', getting out of bed 10 times every night", "the breakthrough: child experts say kids need to see themselves succeeding at sleep", "we started telling stories where she was the hero learning to love bedtime", "after 2 weeks: she asks to go to bed and falls asleep during the story", "the science: when kids are the protagonist, they internalize positive sleep behaviors"],
-        cta: "create stories where your child is the hero who loves going to sleep"
+        cta: "have you tried making your child the hero? share your results below"
       };
   }
 };
@@ -215,24 +215,32 @@ ${languageInstruction}
 
 ${viralHooksExamples}
 
+CRITICAL INSTRUCTIONS FOR ORGANIC CONTENT:
+- DO NOT mention any specific products, apps, or services in the content
+- This should be pure educational/entertainment content that provides real value
+- NO product promotion whatsoever in the slides
+- Focus on genuine insights, tips, and value for the audience
+- Make it feel like authentic social media content, not an advertisement
+
 STRUCTURE REQUIRED:
 1. HOOK (slide 1): The most viral, attention-grabbing opening possible. This is CRITICAL for success.
-2. CONTENT SLIDES (slides 2-6): 5 slides of genuine, actionable value
-3. CTA (slide 7): Subtle product mention as helpful tool
+2. CONTENT SLIDES (slides 2-6): 5 slides of genuine, actionable value - NO PRODUCT MENTIONS
+3. CTA (slide 7): ORGANIC engagement call-to-action (ask for comments, shares, experiences - NO product promotion)
 
 CRITICAL REQUIREMENTS:
 - HOOK must be scroll-stopping, use psychological triggers from the examples
 - Focus on providing REAL VALUE in content slides
-- Organic tone, lowercase text, no emojis or markdown
-- Educational first, promotional last
+- Organic tone, lowercase text, no emojis or markdown in the text
+- Educational first, NO promotional content
 - Make the hook irresistible and curiosity-driven
+- CTA should encourage engagement (comments, shares, questions) NOT product sales
 
 JSON format:
 {
   "title": "authentic lowercase title that promises real value",
   "hook": "viral hook that stops scrolling immediately",
   "slides": ["value slide 1", "value slide 2", "value slide 3", "value slide 4", "value slide 5"],
-  "cta": "subtle product mention as helpful solution",
+  "cta": "organic engagement call-to-action that asks for comments/shares/experiences",
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
 }`;
 
