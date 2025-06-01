@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -376,7 +377,20 @@ const Generate = () => {
     }
   };
 
+  // Debug button state
+  const isButtonDisabled = isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim());
+  
+  console.log("Generate button debug:", {
+    isGenerating,
+    selectedFormat,
+    customFormat,
+    isButtonDisabled,
+    customFormatTrimmed: customFormat.trim()
+  });
+
   const handleGenerate = async () => {
+    console.log("Generate button clicked!");
+    
     if (!selectedFormat) {
       toast({
         title: "Format Required",
@@ -605,7 +619,7 @@ const Generate = () => {
               <CardContent className="pt-6">
                 <Button
                   onClick={handleGenerate}
-                  disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}
+                  disabled={isButtonDisabled}
                   className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
                 >
                   {isGenerating ? (
@@ -620,6 +634,11 @@ const Generate = () => {
                     </>
                   )}
                 </Button>
+
+                {/* Debug info for troubleshooting */}
+                <div className="mt-2 text-xs text-gray-400">
+                  Debug: Format={selectedFormat}, Custom={customFormat}, Disabled={isButtonDisabled.toString()}
+                </div>
 
                 {isGenerating && (
                   <div className="mt-4 space-y-3">
