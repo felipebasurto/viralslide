@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle, Leaf } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -171,7 +170,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
 /**
  * Call Deepseek API to generate viral TikTok slideshow content.
  */
-async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, customFormat: string, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
+async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, customFormat: string, organicMode: boolean, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find(f => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
   onProgress?.("Preparing viral content strategy...");
@@ -204,9 +203,44 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "here's why 99% of [AUDIENCE] fail at [TOPIC]"
 `;
 
+  const organicHooksExamples = language === "es" ? `
+EJEMPLOS DE HOOKS ORGÁNICOS EDUCATIVOS (usa como inspiración):
+- "3 cosas que aprendí sobre [TEMA] después de años de experiencia"
+- "por qué [CONCEPTO] funciona realmente (explicado simple)"
+- "la diferencia entre [OPCIÓN A] y [OPCIÓN B] que nadie explica"
+- "5 señales de que estás haciendo [ACTIVIDAD] correctamente"
+- "qué pasa realmente cuando [PROCESO] - la ciencia detrás"
+- "errores comunes en [ÁREA] que puedes evitar fácilmente"
+- "cómo funciona realmente [CONCEPTO] - guía paso a paso"
+- "lecciones importantes sobre [TEMA] que me tomó años aprender"
+` : `
+EXAMPLES OF ORGANIC EDUCATIONAL HOOKS (use as inspiration):
+- "3 things I learned about [TOPIC] after years of experience"
+- "why [CONCEPT] actually works (explained simply)"
+- "the difference between [OPTION A] and [OPTION B] nobody explains"
+- "5 signs you're doing [ACTIVITY] correctly"
+- "what actually happens when [PROCESS] - the science behind it"
+- "common [AREA] mistakes you can easily avoid"
+- "how [CONCEPT] actually works - step by step guide"
+- "important [TOPIC] lessons that took me years to learn"
+`;
+
   const formatInstruction = formatId === "custom" && customFormat ? 
     `Create content using this CUSTOM FORMAT: ${customFormat}` : 
     `Create viral TikTok slideshow content in "${formatInfo?.title}" format`;
+
+  const organicInstructions = organicMode ? `
+ORGANIC CONTENT MODE - CRITICAL REQUIREMENTS:
+- Generate PURELY EDUCATIONAL content with zero promotional elements
+- Focus on sharing genuine knowledge, insights, and practical tips
+- No mentions of products, services, apps, tools, or anything that could be construed as promotional
+- No calls-to-actions for purchases, sign-ups, downloads, or external links
+- Content should feel like a helpful teacher sharing valuable knowledge
+- Use conversational, authentic tone focused on education
+- End with engagement questions about learning experiences or knowledge sharing
+- No "limited time," "special offer," "our solution," "buy now," or similar language
+- The goal is to provide pure value and education to the audience
+` : "";
 
   const prompt = `${formatInstruction} for: ${systemPrompt}
 
@@ -214,13 +248,15 @@ ${customTopic ? `Topic: ${topic}` : ''}
 
 ${languageInstruction}
 
-${viralHooksExamples}
+${organicMode ? organicHooksExamples : viralHooksExamples}
 
-INSTRUCTIONS FOR ORGANIC EDUCATIONAL SLIDES
+${organicInstructions}
+
+INSTRUCTIONS FOR ${organicMode ? 'ORGANIC EDUCATIONAL' : 'ORGANIC EDUCATIONAL'} SLIDES
 
 CRITICAL GUIDELINES  
-- avoid any language that implies you’re selling or promoting a service/product  
-- content must feel like a genuine, free resource—no “buy now,” no “special offer,” no “limited time,” etc.  
+- avoid any language that implies you're selling or promoting a service/product  
+- content must feel like a genuine, free resource—no "buy now," no "special offer," no "limited time," etc.  
 - focus solely on sharing insights, practical tips, or thought-provoking ideas that readers can use immediately  
 - tone should be conversational, authentic, lowercase, and free of emojis or markdown  
 
@@ -232,8 +268,8 @@ STRUCTURE (7 SLIDES TOTAL)
 
 2. **CONTENT SLIDES (slides 2–6)**  
    - five slides of purely actionable, no-fluff advice or ideas  
-   - each slide must present one standalone “aha” moment or practical tactic  
-   - avoid any reference to “our tool,” “our solution,” “download,” “sign up,” etc.  
+   - each slide must present one standalone "aha" moment or practical tactic  
+   - avoid any reference to "our tool," "our solution," "download," "sign up," etc.  
    - write in lowercase; keep sentences short, clear, and conversational  
 
 3. **CTA (slide 7)**  
@@ -241,14 +277,14 @@ STRUCTURE (7 SLIDES TOTAL)
    - do not ask for clicks, sign-ups, or purchases  
 
 EXAMPLE ADJUSTMENTS  
-- if your original hook sounded like “ready to transform your workflow with our app?”, change it to “most people waste hours on busywork without realizing it”  
+- if your original hook sounded like "ready to transform your workflow with our app?", change it to "most people waste hours on busywork without realizing it"  
 - replace any slide that hints at a product with a slide that simply explains a new perspective, a statistic, or a small ritual readers can try today  
-- the CTA should never “learn more” or “book a call” but something like “what’s your experience? share below”
+- the CTA should never "learn more" or "book a call" but something like "what's your experience? share below"
 
 JSON format:
 {
   "title": "authentic lowercase title that promises real value",
-  "hook": "viral hook that stops scrolling immediately",
+  "hook": "${organicMode ? 'educational hook that teaches something valuable' : 'viral hook that stops scrolling immediately'}",
   "slides": ["value slide 1", "value slide 2", "value slide 3", "value slide 4", "value slide 5"],
   "cta": "organic engagement call-to-action that asks for comments/shares/experiences",
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
@@ -326,6 +362,7 @@ const Generate = () => {
   const [generationProgress, setGenerationProgress] = useState<number>(0);
   const [currentStage, setCurrentStage] = useState<string>("");
   const [estimatedTime, setEstimatedTime] = useState<number>(0);
+  const [organicMode, setOrganicMode] = useState<boolean>(false);
   const { toast } = useToast();
 
   // Load saved preferences
@@ -385,7 +422,8 @@ const Generate = () => {
     selectedFormat,
     customFormat,
     isButtonDisabled,
-    customFormatTrimmed: customFormat.trim()
+    customFormatTrimmed: customFormat.trim(),
+    organicMode
   });
 
   const handleGenerate = async () => {
@@ -429,7 +467,7 @@ const Generate = () => {
               setGeneratedContent(demo);
               setGenerationProgress(100);
               toast({
-                title: "Demo content generated! 🎬",
+                title: organicMode ? "Organic demo content generated! 🌱" : "Demo content generated! 🎬",
                 description: "Using demo content. Add your API key in settings for personalized results."
               });
               setIsGenerating(false);
@@ -441,12 +479,12 @@ const Generate = () => {
     }
 
     try {
-      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, customFormat, handleProgress);
+      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, customFormat, organicMode, handleProgress);
       setGeneratedContent(content);
       setGenerationProgress(100);
       toast({
-        title: "Viral content generated! 🔥",
-        description: "Your slideshow with viral hook is ready to go viral!"
+        title: organicMode ? "Organic content generated! 🌱" : "Viral content generated! 🔥",
+        description: organicMode ? "Your organic, educational content is ready!" : "Your slideshow with viral hook is ready to go viral!"
       });
     } catch (error) {
       console.error("Generation error:", error);
@@ -455,7 +493,7 @@ const Generate = () => {
       setGeneratedContent(demo);
       setGenerationProgress(100);
       toast({
-        title: "Demo content generated! 🎬",
+        title: organicMode ? "Organic demo content generated! 🌱" : "Demo content generated! 🎬",
         description: "API unavailable or returned invalid JSON. Using demo content instead."
       });
     } finally {
@@ -483,7 +521,7 @@ const Generate = () => {
             </Button>
           </Link>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-            Generate Viral Content
+            Generate {organicMode ? "Organic" : "Viral"} Content
           </h1>
         </div>
       </header>
@@ -492,6 +530,54 @@ const Generate = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Generation Panel */}
           <div className="space-y-6">
+            {/* Content Mode Selection */}
+            <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center font-semibold">
+                  <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
+                  Content Mode
+                </CardTitle>
+                <CardDescription className="text-gray-200 font-medium">
+                  Choose between viral engagement or organic education
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button
+                    variant={!organicMode ? "default" : "outline"}
+                    className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
+                      !organicMode
+                        ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600 font-medium"
+                        : "border-white/40 text-white hover:bg-white/15 hover:border-white/60 hover:text-white bg-white/10 backdrop-blur-sm font-medium"
+                    }`}
+                    onClick={() => setOrganicMode(false)}
+                  >
+                    <span className="text-2xl">🔥</span>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium">Viral Content</div>
+                      <div className="text-xs opacity-80 mt-1">Engaging hooks and viral formats</div>
+                    </div>
+                  </Button>
+                  
+                  <Button
+                    variant={organicMode ? "default" : "outline"}
+                    className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
+                      organicMode
+                        ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg hover:from-green-600 hover:to-emerald-600 font-medium"
+                        : "border-white/40 text-white hover:bg-white/15 hover:border-white/60 hover:text-white bg-white/10 backdrop-blur-sm font-medium"
+                    }`}
+                    onClick={() => setOrganicMode(true)}
+                  >
+                    <span className="text-2xl">🌱</span>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium">Organic Content</div>
+                      <div className="text-xs opacity-80 mt-1">Pure educational value, no promotion</div>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Language Selection */}
             <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
               <CardHeader>
@@ -620,24 +706,28 @@ const Generate = () => {
                 <Button
                   onClick={handleGenerate}
                   disabled={isButtonDisabled}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
+                  className={`w-full py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg ${
+                    organicMode 
+                      ? "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600" 
+                      : "bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                  } text-white`}
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Creating Viral Content...
+                      Creating {organicMode ? "Organic" : "Viral"} Content...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Generate Viral Content
+                      {organicMode ? <Leaf className="w-5 h-5 mr-2" /> : <Sparkles className="w-5 h-5 mr-2" />}
+                      Generate {organicMode ? "Organic" : "Viral"} Content
                     </>
                   )}
                 </Button>
 
                 {/* Debug info for troubleshooting */}
                 <div className="mt-2 text-xs text-gray-400">
-                  Debug: Format={selectedFormat}, Custom={customFormat}, Disabled={isButtonDisabled.toString()}
+                  Debug: Format={selectedFormat}, Custom={customFormat}, Disabled={isButtonDisabled.toString()}, Organic={organicMode.toString()}
                 </div>
 
                 {isGenerating && (
