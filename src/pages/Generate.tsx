@@ -255,13 +255,13 @@ const Generate = () => {
   // Load saved preferences
   useEffect(() => {
     const savedFormat = localStorage.getItem("preferred_format");
-    const savedLanguage = localStorage.getItem("preferred_language");
+    const savedLanguage = localStorage.getItem("preferred_language") as "en" | "es";
     const savedCustomFormat = localStorage.getItem("custom_format");
     
     if (savedFormat && viralFormats.find(f => f.id === savedFormat)) {
       setSelectedFormat(savedFormat);
     }
-    if (savedLanguage) {
+    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "es")) {
       setSelectedLanguage(savedLanguage);
     }
     if (savedCustomFormat) {
@@ -477,7 +477,7 @@ const Generate = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as "en" | "es")}>
                   <SelectTrigger className="bg-white/10 border-purple-300 text-white">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
