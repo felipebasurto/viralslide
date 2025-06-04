@@ -92,7 +92,7 @@ const topicSuggestions = {
 /**
  * Demo content generator for when the API is unavailable.
  */
-const getDemoContent = (formatId: string, customTopic: string, language: string): GeneratedContent => {
+const getDemoContent = (formatId: string, customTopic: string, language: "en" | "es"): GeneratedContent => {
   const formatInfo = viralFormats.find(f => f.id === formatId);
   if (language === "es") {
     const baseContent = {
@@ -171,7 +171,7 @@ const getDemoContent = (formatId: string, customTopic: string, language: string)
 /**
  * Call Deepseek API to generate viral TikTok slideshow content.
  */
-async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, customFormat: string, organicMode: boolean, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
+async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: "en" | "es", customFormat: string, organicMode: boolean, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find(f => f.id === formatId);
   onProgress?.("Preparing viral content strategy...");
   
@@ -243,7 +243,7 @@ const Generate = () => {
   const [selectedFormat, setSelectedFormat] = useState<string>("");
   const [customFormat, setCustomFormat] = useState<string>("");
   const [customTopic, setCustomTopic] = useState<string>("");
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+  const [selectedLanguage, setSelectedLanguage] = useState<"en" | "es">("en");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [generationProgress, setGenerationProgress] = useState<number>(0);
