@@ -14,8 +14,10 @@ import { ContentResult } from "@/components/ContentResult";
 interface GeneratedContent {
   /** The clickbait-style title / hook for the slideshow */
   title: string;
-  /** The main viral hook - first slide */
-  hook: string;
+  /** Array of 3 different hook variations - user can pick the best */
+  hookVariations: string[];
+  /** The selected hook index (default: 0) */
+  selectedHookIndex: number;
   /** Array of 5 content slide strings with markdown for styling and emojis */
   slides: string[];
   /** Call-to-action slide - last slide */
@@ -89,95 +91,37 @@ const topicSuggestions = {
 };
 
 /**
- * Demo content generator for when the API is unavailable.
+ * Call Deepseek API to generate TikTok slideshow content.
  */
-const getDemoContent = (formatId: string, customTopic: string, language: string): GeneratedContent => {
-  const formatInfo = viralFormats.find(f => f.id === formatId);
-  if (language === "es") {
-    const baseContent = {
-      format: formatInfo?.title || formatId,
-      searchTerms: ["padre leyendo cuento a niño", "libro infantil personalizado", "app de cuentos con inteligencia artificial", "niño feliz escuchando cuento personalizado", "familia unida contando historias", "niño durmiendo pacíficamente", "padres relajados después del cuento"]
-    };
-    switch (formatId) {
-      case "top5tips":
-        return {
-          ...baseContent,
-          title: "5 secretos para que tu hijo se duerma en minutos",
-          hook: "¿sabías que hay una forma de hacer que tu hijo se duerma en menos de 15 minutos cada noche?",
-          slides: ["consejo 1: haz que tu hijo sea el protagonista - los niños escuchan 3 veces más cuando son el héroe", "consejo 2: usa la misma frase de apertura cada noche - la consistencia entrena su cerebro", "consejo 3: déjales elegir un elemento de la historia - el lugar, el compañero o el desafío", "consejo 4: termina siempre con una resolución tranquila donde el héroe se duerme pacíficamente", "consejo 5: mantén la historia entre 5-10 minutos máximo para evitar sobreestimulación"],
-          cta: "prueba nuestro generador gratuito de cuentos con ia - crea historias personalizadas en segundos"
-        };
-      case "custom":
-        return {
-          ...baseContent,
-          title: "formato personalizado: mi estrategia única",
-          hook: "este formato personalizado está diseñado para tu audiencia específica",
-          slides: ["elemento 1: adapta tu mensaje a tu nicho", "elemento 2: usa ejemplos específicos de tu experiencia", "elemento 3: incluye datos relevantes para tu audiencia", "elemento 4: añade tu toque personal único", "elemento 5: termina con tu propuesta de valor"],
-          cta: "prueba tu formato personalizado y ve los resultados"
-        };
-      default:
-        return {
-          ...baseContent,
-          title: "la rutina nocturna que cambió todo para nosotros",
-          hook: "deja de desplazarte si quieres descubrir cómo transformamos el caos nocturno en tiempo familiar pacífico",
-          slides: ["antes: peleas por qué libro leer, rabietas constantes, dormir tomaba 2 horas", "el cambio: empezamos a crear nuevas historias juntos cada noche", "a los niños les encanta ser el héroe de su propia aventura personalizada", "a los padres les encanta enseñar valores a través de historias únicas", "resultado: no más 'léelo otra vez' porque cada historia es especial y nueva"],
-          cta: "prueba nuestro generador gratuito - crea cuentos personalizados en segundos"
-        };
-    }
-  }
-
-  // English content
-  const baseContent = {
-    format: formatInfo?.title || formatId,
-    searchTerms: ["parent reading bedtime story to child", "children's book with personalized character", "child psychology research about sleep", "happy child listening to custom story", "family bonding with storytelling", "peaceful child sleeping", "relaxed parents after bedtime"]
-  };
-  switch (formatId) {
-    case "top5tips":
-      return {
-        ...baseContent,
-        title: "5 psychology-backed bedtime tips that actually work",
-        hook: "what if I told you there's a simple way to get your child to sleep in under 15 minutes every night?",
-        slides: ["tip 1: make them the hero - research shows kids focus 3x longer when they're the protagonist", "tip 2: use the same opening phrase every night to trigger their brain's sleep mode", "tip 3: give them control within boundaries - let them choose the setting or one character trait", "tip 4: always end with a 'sleepy resolution' where the main character winds down peacefully", "tip 5: keep stories 5-10 minutes max to avoid overstimulation before sleep"],
-        cta: "try our free ai story generator - create personalized bedtime stories in seconds"
-      };
-    case "custom":
-      return {
-        ...baseContent,
-        title: "custom format: my unique viral strategy",
-        hook: "this custom format is designed specifically for your audience and goals",
-        slides: ["element 1: tailor your message to your specific niche", "element 2: use examples from your personal experience", "element 3: include data points relevant to your audience", "element 4: add your unique perspective or twist", "element 5: end with your specific value proposition"],
-        cta: "try your custom format and watch the engagement soar"
-      };
-    case "commonerrors":
-      return {
-        ...baseContent,
-        title: "bedtime mistakes that keep kids awake (backed by sleep research)",
-        hook: "stop scrolling - you need to see this if you're struggling with bedtime routines",
-        slides: ["mistake 1: exciting plots before bed - action stories increase cortisol and delay sleep by 45 minutes", "mistake 2: inconsistent routine - your child's brain needs the same sequence to release melatonin", "mistake 3: generic characters - kids disconnect when they can't relate to the protagonist", "mistake 4: bright screens during story time - blue light blocks melatonin for 2 hours", "the fix: calming stories where your child is the sleepy hero learning to love bedtime"],
-        cta: "try stories with personalized characters that teach healthy sleep habits"
-      };
-    default:
-      return {
-        ...baseContent,
-        title: "how we cut bedtime from 2 hours to 15 minutes (real parent story)",
-        hook: "imagine if you could transform your chaotic bedtime into peaceful family time in just 2 weeks",
-        slides: ["before: tantrums, 'just one more story', getting out of bed 10 times every night", "the breakthrough: child experts say kids need to see themselves succeeding at sleep", "we started telling stories where she was the hero learning to love bedtime", "after 2 weeks: she asks to go to bed and falls asleep during the story", "the science: when kids are the protagonist, they internalize positive sleep behaviors"],
-        cta: "create stories where your child is the hero who loves going to sleep"
-      };
-  }
-};
-
-/**
- * Call Deepseek API to generate viral TikTok slideshow content.
- */
-async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, customFormat: string, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
+async function fetchGeneratedContent(apiKey: string, systemPrompt: string, formatId: string, customTopic: string, language: string, customFormat: string, contentMode: string, onProgress?: (stage: string) => void): Promise<GeneratedContent> {
   const formatInfo = viralFormats.find(f => f.id === formatId);
   const topic = customTopic || `${formatInfo?.title.toLowerCase()} content`;
-  onProgress?.("Preparing viral content strategy...");
+  const isOrganic = contentMode === "organic";
+  
+  onProgress?.(isOrganic ? "Preparing educational content strategy..." : "Preparing viral content strategy...");
   
   const languageInstruction = language === "es" ? "Respond in Spanish. All content should be in Spanish." : "Respond in English. All content should be in English.";
   
-  const viralHooksExamples = language === "es" ? `
+  // Different hook examples based on content mode
+  const hookExamples = isOrganic ? 
+    (language === "es" ? `
+EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
+- "hoy quiero compartir contigo [TEMA]"
+- "esto es lo que he aprendido sobre [TEMA]"  
+- "permíteme explicarte [CONCEPTO]"
+- "en mi experiencia con [TEMA]..."
+- "una cosa que me ayudó mucho con [PROBLEMA]"
+- "te comparto lo que funciona para [OBJETIVO]"
+` : `
+EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
+- "let me share what I've learned about [TOPIC]"
+- "here's what helped me with [PROBLEM]"
+- "in my experience with [TOPIC]..."
+- "something that really worked for me with [GOAL]"
+- "I want to talk about [TOPIC] today"
+- "let me explain [CONCEPT] in simple terms"
+`) : 
+    (language === "es" ? `
 EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "¿sabías que hay una forma sencilla de conseguir [RESULTADO]?"
 - "deja de desplazarte si quieres descubrir [SECRETO]"
@@ -201,11 +145,42 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "nobody told you this yet but [TRUTH]"
 - "are you tired of [PROBLEM]? then try this"
 - "here's why 99% of [AUDIENCE] fail at [TOPIC]"
-`;
+`);
 
   const formatInstruction = formatId === "custom" && customFormat ? 
     `Create content using this CUSTOM FORMAT: ${customFormat}` : 
-    `Create viral TikTok slideshow content in "${formatInfo?.title}" format`;
+    `Create ${isOrganic ? 'educational' : 'viral'} TikTok slideshow content in "${formatInfo?.title}" format`;
+
+  const contentRequirements = isOrganic ? `
+STRUCTURE REQUIRED:
+1. HOOK (slide 1): Natural, conversational opening that introduces the topic genuinely
+2. CONTENT SLIDES (slides 2-6): 5 slides of pure educational value with actionable insights
+3. CTA (slide 7): Authentic engagement question or community building
+
+CRITICAL REQUIREMENTS FOR ORGANIC CONTENT:
+- HOOK should be genuine, conversational, and educational in tone
+- NO clickbait, NO "scroll-stopping" language, NO psychological manipulation
+- Focus on pure educational VALUE and authentic sharing
+- Natural, personal tone - like talking to a friend
+- Educational first, authentic engagement last
+- Make it helpful and genuine, not attention-grabbing
+
+VOICE AND TONE:
+- Write exactly as specified in the custom format/personal voice
+- If custom format mentions personality traits, follow them EXACTLY
+- Use the person's natural speaking style and perspective
+- Be authentic to their voice, not generic viral content` : `
+STRUCTURE REQUIRED:
+1. HOOK (slide 1): The most viral, attention-grabbing opening possible. This is CRITICAL for success.
+2. CONTENT SLIDES (slides 2-6): 5 slides of genuine, actionable value
+3. CTA (slide 7): Subtle product mention as helpful tool
+
+CRITICAL REQUIREMENTS FOR VIRAL CONTENT:
+- HOOK must be scroll-stopping, use psychological triggers from the examples
+- Focus on providing REAL VALUE in content slides
+- Organic tone, lowercase text, no emojis or markdown
+- Educational first, promotional last
+- Make the hook irresistible and curiosity-driven`;
 
   const prompt = `${formatInstruction} for: ${systemPrompt}
 
@@ -213,30 +188,26 @@ ${customTopic ? `Topic: ${topic}` : ''}
 
 ${languageInstruction}
 
-${viralHooksExamples}
+${hookExamples}
 
-STRUCTURE REQUIRED:
-1. HOOK (slide 1): The most viral, attention-grabbing opening possible. This is CRITICAL for success.
-2. CONTENT SLIDES (slides 2-6): 5 slides of genuine, actionable value
-3. CTA (slide 7): Subtle product mention as helpful tool
+${contentRequirements}
 
-CRITICAL REQUIREMENTS:
-- HOOK must be scroll-stopping, use psychological triggers from the examples
-- Focus on providing REAL VALUE in content slides
-- Organic tone, lowercase text, no emojis or markdown
-- Educational first, promotional last
-- Make the hook irresistible and curiosity-driven
+IMPORTANT: Generate 3 different hook variations to give the user choice. Each hook should use different psychological triggers or angles.
 
 JSON format:
 {
-  "title": "authentic lowercase title that promises real value",
-  "hook": "viral hook that stops scrolling immediately",
-  "slides": ["value slide 1", "value slide 2", "value slide 3", "value slide 4", "value slide 5"],
-  "cta": "subtle product mention as helpful solution",
+  "title": "${isOrganic ? 'natural, authentic title about the topic' : 'authentic lowercase title that promises real value'}",
+  "hookVariations": [
+    "${isOrganic ? 'genuine, conversational opening variation 1' : 'viral hook variation 1 that stops scrolling'}",
+    "${isOrganic ? 'genuine, conversational opening variation 2' : 'viral hook variation 2 with different angle'}",
+    "${isOrganic ? 'genuine, conversational opening variation 3' : 'viral hook variation 3 with unique trigger'}"
+  ],
+  "slides": ["${isOrganic ? 'educational point 1' : 'value slide 1'}", "${isOrganic ? 'educational point 2' : 'value slide 2'}", "${isOrganic ? 'educational point 3' : 'value slide 3'}", "${isOrganic ? 'educational point 4' : 'value slide 4'}", "${isOrganic ? 'educational point 5' : 'value slide 5'}"],
+  "cta": "${isOrganic ? 'authentic engagement question or community building' : 'subtle product mention as helpful solution'}",
   "searchTerms": ["visual 1", "visual 2", "visual 3", "visual 4", "visual 5", "visual 6", "visual 7"]
 }`;
 
-  onProgress?.("Generating viral hook...");
+  onProgress?.("Analyzing your voice and topic...");
   const response = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
     headers: {
@@ -254,7 +225,7 @@ JSON format:
     })
   });
 
-  onProgress?.("Processing content slides...");
+  onProgress?.("Crafting 3 hook variations...");
   if (!response.ok) {
     const errorText = await response.text();
     console.error("API request failed:", response.status, errorText);
@@ -262,11 +233,13 @@ JSON format:
   }
 
   const apiResponse = await response.json();
-  onProgress?.("Finalizing viral content...");
+  onProgress?.("Building your content slides...");
   const content = apiResponse.choices?.[0]?.message?.content || "";
   if (!content) {
     throw new Error("Empty response from API");
   }
+
+  onProgress?.("Optimizing for engagement...");
 
   // Enhanced JSON extraction
   let jsonString = content;
@@ -283,12 +256,13 @@ JSON format:
     const parsed = JSON.parse(jsonString);
 
     // Validate required fields for new structure
-    if (!parsed.title || !parsed.hook || !Array.isArray(parsed.slides) || !parsed.cta || !Array.isArray(parsed.searchTerms)) {
+    if (!parsed.title || !parsed.hookVariations || !Array.isArray(parsed.hookVariations) || !parsed.slides || !parsed.cta || !Array.isArray(parsed.searchTerms)) {
       console.error("Invalid JSON structure:", parsed);
-      throw new Error("Response missing required fields (title, hook, slides, cta, searchTerms)");
+      throw new Error("Response missing required fields (title, hookVariations, slides, cta, searchTerms)");
     }
     return {
       ...parsed,
+      selectedHookIndex: 0, // Default to first hook
       format: formatInfo?.title || formatId
     };
   } catch (e) {
@@ -303,6 +277,7 @@ const Generate = () => {
   const [customFormat, setCustomFormat] = useState<string>("");
   const [customTopic, setCustomTopic] = useState<string>("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+  const [contentMode, setContentMode] = useState<string>("viral");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [generationProgress, setGenerationProgress] = useState<number>(0);
@@ -315,6 +290,7 @@ const Generate = () => {
     const savedFormat = localStorage.getItem("preferred_format");
     const savedLanguage = localStorage.getItem("preferred_language");
     const savedCustomFormat = localStorage.getItem("custom_format");
+    const savedContentMode = localStorage.getItem("content_mode");
     
     if (savedFormat && viralFormats.find(f => f.id === savedFormat)) {
       setSelectedFormat(savedFormat);
@@ -324,6 +300,9 @@ const Generate = () => {
     }
     if (savedCustomFormat) {
       setCustomFormat(savedCustomFormat);
+    }
+    if (savedContentMode) {
+      setContentMode(savedContentMode);
     }
   }, []);
 
@@ -342,20 +321,30 @@ const Generate = () => {
     localStorage.setItem("custom_format", customFormat);
   }, [customFormat]);
 
+  useEffect(() => {
+    localStorage.setItem("content_mode", contentMode);
+  }, [contentMode]);
+
   const handleProgress = (stage: string) => {
     setCurrentStage(stage);
     if (stage.includes("Preparing")) {
-      setGenerationProgress(25);
+      setGenerationProgress(20);
       setEstimatedTime(15);
-    } else if (stage.includes("Generating")) {
-      setGenerationProgress(50);
-      setEstimatedTime(10);
-    } else if (stage.includes("Processing")) {
+    } else if (stage.includes("Analyzing")) {
+      setGenerationProgress(35);
+      setEstimatedTime(12);
+    } else if (stage.includes("Crafting")) {
+      setGenerationProgress(55);
+      setEstimatedTime(8);
+    } else if (stage.includes("Building")) {
       setGenerationProgress(75);
       setEstimatedTime(5);
-    } else if (stage.includes("Finalizing")) {
+    } else if (stage.includes("Optimizing")) {
       setGenerationProgress(90);
       setEstimatedTime(2);
+    } else if (stage.includes("Finalizing")) {
+      setGenerationProgress(95);
+      setEstimatedTime(1);
     }
   };
 
@@ -384,48 +373,31 @@ const Generate = () => {
     setGenerationProgress(0);
     setEstimatedTime(20);
 
-    // Fallback to demo content if no API key or system prompt
+    // Require API key and system prompt - no fallbacks
     if (!apiKey || !systemPrompt) {
-      handleProgress("Preparing demo content...");
-      setTimeout(() => {
-        handleProgress("Generating viral hook...");
-        setTimeout(() => {
-          handleProgress("Processing content slides...");
-          setTimeout(() => {
-            handleProgress("Finalizing viral content...");
-            setTimeout(() => {
-              const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
-              setGeneratedContent(demo);
-              setGenerationProgress(100);
-              toast({
-                title: "Demo content generated! 🎬",
-                description: "Using demo content. Add your API key in settings for personalized results."
-              });
-              setIsGenerating(false);
-            }, 500);
-          }, 1000);
-        }, 1000);
-      }, 1000);
+      toast({
+        title: "Setup Required",
+        description: "Please add your API key and business information in Settings before generating content.",
+        variant: "destructive"
+      });
+      setIsGenerating(false);
       return;
     }
 
     try {
-      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, customFormat, handleProgress);
+      const content = await fetchGeneratedContent(apiKey, systemPrompt, selectedFormat, customTopic, selectedLanguage, customFormat, contentMode, handleProgress);
       setGeneratedContent(content);
       setGenerationProgress(100);
       toast({
-        title: "Viral content generated! 🔥",
-        description: "Your slideshow with viral hook is ready to go viral!"
+        title: `${contentMode === "organic" ? "Organic" : "Viral"} content generated! ${contentMode === "organic" ? "🌱" : "🔥"}`,
+        description: `Your ${contentMode === "organic" ? "educational slideshow" : "slideshow with viral hook"} is ready!`
       });
     } catch (error) {
       console.error("Generation error:", error);
-      // Fallback to demo if API call or parsing fails
-      const demo = getDemoContent(selectedFormat, customTopic, selectedLanguage);
-      setGeneratedContent(demo);
-      setGenerationProgress(100);
       toast({
-        title: "Demo content generated! 🎬",
-        description: "API unavailable or returned invalid JSON. Using demo content instead."
+        title: "Generation Failed",
+        description: "Failed to generate content. Please check your API key and try again.",
+        variant: "destructive"
       });
     } finally {
       setIsGenerating(false);
@@ -438,213 +410,284 @@ const Generate = () => {
     setCustomTopic(suggestion);
   };
 
+  const handleHookSelectionChange = (index: number) => {
+    if (generatedContent) {
+      setGeneratedContent({
+        ...generatedContent,
+        selectedHookIndex: index
+      });
+    }
+  };
+
   const selectedFormatInfo = viralFormats.find(f => f.id === selectedFormat);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+      {/* Background Glass Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
+      </div>
+
       {/* Header */}
       <header className="relative z-10 p-6">
-        <div className="max-w-6xl mx-auto flex items-center space-x-4">
-          <Link to="/">
-            <Button variant="outline" size="sm" className="border-white text-white hover:text-gray-900 transition-all duration-300 bg-white/20 hover:bg-white backdrop-blur-sm font-medium shadow-md">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-          </Link>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-            Generate Viral Content
-          </h1>
+        <div className="max-w-6xl mx-auto">
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 shadow-2xl">
+            <div className="flex items-center space-x-4">
+              <Link to="/">
+                <Button variant="outline" size="sm" className="border-white/20 text-white hover:text-gray-900 transition-all duration-300 bg-white/10 hover:bg-white/90 backdrop-blur-sm font-medium shadow-lg rounded-xl hover:scale-105">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+              </Link>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                Generate {contentMode === "organic" ? "Organic" : "Viral"} Content
+              </h1>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Generation Panel */}
           <div className="space-y-6">
+            {/* Content Mode Selection */}
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <div className="mb-4">
+                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
+                  <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
+                  Content Mode
+                </h3>
+                <p className="text-white/70 text-sm font-medium">
+                  Choose between viral engagement or organic education
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setContentMode("viral")}
+                  className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
+                    contentMode === "viral"
+                      ? "bg-gradient-to-r from-pink-500/30 to-purple-500/30 border-pink-400/40 shadow-lg scale-105"
+                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl">🔥</span>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium text-white">Viral Content</div>
+                      <div className="text-xs text-white/70 mt-1">Engaging hooks and viral formats</div>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => setContentMode("organic")}
+                  className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
+                    contentMode === "organic"
+                      ? "bg-gradient-to-r from-green-500/30 to-emerald-500/30 border-green-400/40 shadow-lg scale-105"
+                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl">🌱</span>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium text-white">Organic Content</div>
+                      <div className="text-xs text-white/70 mt-1">Pure educational value, no promotion</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
             {/* Language Selection */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center font-semibold">
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <div className="mb-4">
+                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
                   <Globe className="w-5 h-5 mr-2 text-pink-400" />
                   Language
-                </CardTitle>
-                <CardDescription className="text-gray-200 font-medium">
+                </h3>
+                <p className="text-white/70 text-sm font-medium">
                   Choose your content language
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                  <SelectTrigger className="bg-white/10 border-purple-300 text-white">
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-900/95 backdrop-blur-lg border-purple-300">
-                    {languages.map(lang => (
-                      <SelectItem key={lang.code} value={lang.code}>
-                        {lang.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
+                </p>
+              </div>
+              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                <SelectTrigger className="bg-white/10 border-white/20 text-white backdrop-blur-sm rounded-xl h-12 hover:bg-white/15 transition-all duration-200">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20 rounded-xl">
+                  {languages.map(lang => (
+                    <SelectItem key={lang.code} value={lang.code} className="text-white hover:bg-white/10">
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Format Selection */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center font-semibold">
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <div className="mb-4">
+                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
                   Choose Format
-                  <Info className="w-4 h-4 ml-2 text-gray-300" />
-                </CardTitle>
-                <CardDescription className="text-gray-200 font-medium">
-                  Select a proven viral format for your content
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-3">
-                  {viralFormats.map(format => (
-                    <Button
-                      key={format.id}
-                      variant={selectedFormat === format.id ? "default" : "outline"}
-                      className={`p-4 h-auto flex items-start space-x-3 transition-all duration-300 ${
-                        selectedFormat === format.id
-                          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0 shadow-lg hover:from-pink-600 hover:to-purple-600 font-medium"
-                          : "border-white/40 text-white hover:bg-white/15 hover:border-white/60 hover:text-white bg-white/10 backdrop-blur-sm font-medium"
-                      }`}
-                      onClick={() => setSelectedFormat(format.id)}
-                    >
+                  <Info className="w-4 h-4 ml-2 text-white/50" />
+                </h3>
+                <p className="text-white/70 text-sm font-medium">
+                  Select a proven format for your content
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-3">
+                {viralFormats.map(format => (
+                  <button
+                    key={format.id}
+                    onClick={() => setSelectedFormat(format.id)}
+                    className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border text-left ${
+                      selectedFormat === format.id
+                        ? "bg-gradient-to-r from-pink-500/30 to-purple-500/30 border-pink-400/40 shadow-lg scale-102"
+                        : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3">
                       <span className="text-2xl">{format.emoji}</span>
-                      <div className="flex-1 text-left">
-                        <div className="font-medium">{format.title}</div>
-                        <div className="text-xs opacity-80 mt-1">{format.description}</div>
-                        <div className="text-xs italic opacity-60 mt-1">e.g. "{format.example}"</div>
+                      <div className="flex-1">
+                        <div className="font-medium text-white">{format.title}</div>
+                        <div className="text-xs text-white/70 mt-1">{format.description}</div>
+                        <div className="text-xs italic text-white/50 mt-1">e.g. "{format.example}"</div>
                       </div>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Custom Format Field */}
             {selectedFormat === "custom" && (
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20 border-purple-400/50">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center">
+              <div className="backdrop-blur-xl bg-white/5 border border-purple-400/30 rounded-2xl p-6 shadow-2xl">
+                <div className="mb-4">
+                  <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
                     🎨 Custom Format Description
-                  </CardTitle>
-                  <CardDescription className="text-purple-200">
-                    Describe your unique viral format in detail
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Input
-                    placeholder="e.g., 'Start with a shocking statistic, then reveal 3 counterintuitive strategies, end with a personal story'"
-                    value={customFormat}
-                    onChange={(e) => setCustomFormat(e.target.value)}
-                    className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
-                  />
-                </CardContent>
-              </Card>
+                  </h3>
+                  <p className="text-purple-200/80 text-sm font-medium">
+                    Describe your unique format in detail
+                  </p>
+                </div>
+                <Input
+                  placeholder="e.g., 'Start with a shocking statistic, then reveal 3 counterintuitive strategies, end with a personal story'"
+                  value={customFormat}
+                  onChange={(e) => setCustomFormat(e.target.value)}
+                  className="bg-white/10 border-purple-300/30 text-white placeholder:text-white/50 focus:border-purple-400/60 rounded-xl h-12 backdrop-blur-sm"
+                />
+              </div>
             )}
 
             {/* Custom Topic with Suggestions */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-              <CardHeader>
-                <CardTitle className="text-white">Custom Topic</CardTitle>
-                <CardDescription className="text-gray-300">
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <div className="mb-4">
+                <h3 className="text-white font-semibold text-lg mb-2">Custom Topic</h3>
+                <p className="text-white/70 text-sm font-medium">
                   Optional: Specify a particular angle or topic
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                </p>
+              </div>
+              <div className="space-y-4">
                 <Input
                   placeholder="e.g., morning routines, productivity..."
                   value={customTopic}
                   onChange={(e) => setCustomTopic(e.target.value)}
-                  className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-purple-400/60 rounded-xl h-12 backdrop-blur-sm"
                 />
                 
                 {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && (
                   <div>
-                    <Label className="text-white text-sm mb-2 block">Popular topics for {selectedFormatInfo?.title}:</Label>
+                    <div className="text-white text-sm mb-2 font-medium">Popular topics for {selectedFormatInfo?.title}:</div>
                     <div className="flex flex-wrap gap-2">
                       {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map(suggestion => (
-                        <Badge
+                        <button
                           key={suggestion}
-                          variant="secondary"
-                          className="bg-purple-500/30 text-purple-200 hover:bg-purple-500/40 cursor-pointer transition-colors border border-purple-400/30"
                           onClick={() => handleTopicSuggestion(suggestion)}
+                          className="bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 cursor-pointer transition-colors border border-purple-400/30 px-3 py-1 rounded-full text-sm backdrop-blur-sm hover:scale-105 duration-200"
                         >
                           {suggestion}
-                        </Badge>
+                        </button>
                       ))}
                     </div>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Generate Button with Progress */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-              <CardContent className="pt-6">
-                <Button
-                  onClick={handleGenerate}
-                  disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-lg"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Creating Viral Content...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Generate Viral Content
-                    </>
-                  )}
-                </Button>
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <Button
+                onClick={handleGenerate}
+                disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}
+                className="w-full bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-600/90 hover:to-purple-600/90 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-2xl rounded-xl backdrop-blur-sm"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Creating {contentMode === "organic" ? "Organic" : "Viral"} Content...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Generate {contentMode === "organic" ? "Organic" : "Viral"} Content
+                  </>
+                )}
+              </Button>
 
-                {isGenerating && (
-                  <div className="mt-4 space-y-3">
-                    <Progress value={generationProgress} className="h-2" />
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-purple-200 flex items-center font-medium">
-                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+              {/* Debug Information */}
+              <div className="mt-2 text-xs text-white/50 text-center backdrop-blur-sm">
+                Debug: Format={selectedFormat}, Custom={customFormat}, Disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}, Organic={contentMode === "organic"}
+              </div>
+
+              {isGenerating && (
+                <div className="mt-6 space-y-4">
+                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                    <Progress value={generationProgress} className="h-3 bg-white/20 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-500 ease-out rounded-full" style={{width: `${generationProgress}%`}}></div>
+                    </Progress>
+                    <div className="flex items-center justify-between text-sm mt-3">
+                      <span className="text-white/80 flex items-center font-medium">
+                        <Loader2 className="w-3 h-3 mr-2 animate-spin" />
                         {currentStage}
                       </span>
-                      <span className="text-gray-300 flex items-center font-medium">
+                      <span className="text-white/60 flex items-center font-medium">
                         <Clock className="w-3 h-3 mr-1" />
                         ~{estimatedTime}s remaining
                       </span>
                     </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Results Panel */}
           <div>
             {generatedContent ? (
               <div className="space-y-4">
-                <div className="flex items-center space-x-2 mb-4">
+                <div className="flex items-center space-x-2 mb-4 backdrop-blur-xl bg-green-500/10 border border-green-400/30 rounded-xl p-3">
                   <CheckCircle className="w-5 h-5 text-green-400" />
                   <span className="text-green-200 font-semibold">Content generated successfully!</span>
                 </div>
-                <ContentResult content={generatedContent} />
+                <ContentResult 
+                  content={generatedContent} 
+                  onHookSelectionChange={handleHookSelectionChange}
+                />
               </div>
             ) : (
-              <Card className="bg-white/15 backdrop-blur-lg border-white/40 h-full flex items-center justify-center shadow-xl">
-                <CardContent className="text-center py-16">
-                  <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-60" />
-                  <p className="text-gray-200 text-lg mb-2 font-medium">
-                    Select a format and generate viral content
+              <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-16 shadow-2xl h-full flex items-center justify-center">
+                <div className="text-center">
+                  <Sparkles className="w-16 h-16 text-purple-400/60 mx-auto mb-4" />
+                  <p className="text-white/80 text-lg mb-2 font-medium">
+                    Select a format and generate content
                   </p>
-                  <p className="text-gray-300 text-sm font-medium">
+                  <p className="text-white/60 text-sm font-medium">
                     Choose from proven formats that drive engagement
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
         </div>

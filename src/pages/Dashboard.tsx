@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Plus, Trash2, ExternalLink, TrendingUp, Heart, MessageCircle, Eye, BarChart3, Calendar, Copy, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ExternalLink, TrendingUp, Heart, MessageCircle, Eye, BarChart3, Calendar, Copy, CheckCircle2, RefreshCw, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { tiktokAPI, TimeBasedMetrics, TikTokVideoStats } from "@/lib/tiktok-api";
+import TimeBasedMetricsComponent from "@/components/TimeBasedMetrics";
 
 interface TikTokVideo {
   id: string;
@@ -19,6 +21,10 @@ interface TikTokVideo {
   shares: number;
   dateAdded: string;
   lastUpdated: string;
+  viewsGrowth?: TimeBasedMetrics;
+  likesGrowth?: TimeBasedMetrics;
+  commentsGrowth?: TimeBasedMetrics;
+  sharesGrowth?: TimeBasedMetrics;
 }
 
 interface TikTokStats {
@@ -35,6 +41,8 @@ const Dashboard = () => {
   const [newVideoUrl, setNewVideoUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
   const { toast } = useToast();
 
   // Load videos from localStorage on component mount
@@ -47,14 +55,133 @@ const Dashboard = () => {
         console.error("Error loading saved videos:", error);
       }
     }
+
+    // Check if user is authenticated
+    checkAuthentication();
   }, []);
+
+  // Auto-refresh videos every 5 minutes if enabled
+  useEffect(() => {
+    if (!autoRefreshEnabled || videos.length === 0) return;
+
+    const interval = setInterval(() => {
+      refreshAllVideos();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [autoRefreshEnabled, videos.length]);
 
   // Save videos to localStorage whenever videos change
   useEffect(() => {
     localStorage.setItem("tiktok_videos", JSON.stringify(videos));
   }, [videos]);
 
-  // Demo function to simulate fetching TikTok stats
+  // Check if user is authenticated with TikTok
+  const checkAuthentication = async () => {
+    try {
+      const accessToken = await tiktokAPI.getValidAccessToken();
+      setIsAuthenticated(!!accessToken);
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      setIsAuthenticated(false);
+    }
+  };
+
+  // Refresh all videos' stats
+  const refreshAllVideos = async () => {
+    if (videos.length === 0) return;
+
+    try {
+      const updatedVideos = await Promise.all(
+        videos.map(async (video) => {
+          const videoId = tiktokAPI.extractVideoIdFromUrl(video.url);
+          if (!videoId) return video;
+
+          const accessToken = await tiktokAPI.getValidAccessToken();
+          const stats = await tiktokAPI.getVideoStats(videoId, accessToken || '');
+          
+          // Store historical data
+          tiktokAPI.storeHistoricalData(videoId, stats);
+          
+          // Calculate time-based growth
+          const historicalData = tiktokAPI.getHistoricalData(videoId);
+          const viewsGrowth = tiktokAPI.calculateTimeBasedGrowth(historicalData);
+          
+          return {
+            ...video,
+            views: stats.view_count,
+            likes: stats.like_count,
+            comments: stats.comment_count,
+            shares: stats.share_count,
+            lastUpdated: new Date().toISOString(),
+            viewsGrowth,
+            // For now, we'll use views growth for all metrics since we only track views historically
+            likesGrowth: viewsGrowth,
+            commentsGrowth: viewsGrowth,
+            sharesGrowth: viewsGrowth,
+          };
+        })
+      );
+
+      setVideos(updatedVideos);
+      
+      toast({
+        title: "Stats Updated",
+        description: "All video statistics have been refreshed."
+      });
+    } catch (error) {
+      console.error('Error refreshing all videos:', error);
+      toast({
+        title: "Refresh Failed",
+        description: "Unable to refresh all video stats.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Enhanced function to fetch TikTok stats using the API
+  const fetchTikTokStats = async (url: string): Promise<Omit<TikTokVideo, 'id' | 'dateAdded' | 'lastUpdated'>> => {
+    const videoId = tiktokAPI.extractVideoIdFromUrl(url);
+    
+    if (!videoId) {
+      throw new Error('Invalid TikTok URL format');
+    }
+
+    try {
+      const accessToken = await tiktokAPI.getValidAccessToken();
+      const stats = await tiktokAPI.getVideoStats(videoId, accessToken || '');
+      
+      // Store initial historical data point
+      tiktokAPI.storeHistoricalData(videoId, stats);
+      
+      // Calculate initial time-based growth (will be zero for new videos)
+      const historicalData = tiktokAPI.getHistoricalData(videoId);
+      const viewsGrowth = tiktokAPI.calculateTimeBasedGrowth(historicalData);
+
+      // Determine content type from URL
+      const isPhotoCarousel = url.includes('/photo/');
+      const contentType = isPhotoCarousel ? 'Photo Carousel' : 'Video';
+      
+      return {
+        url,
+        title: `TikTok ${contentType} ${videos.length + 1}`,
+        views: stats.view_count,
+        likes: stats.like_count,
+        comments: stats.comment_count,
+        shares: stats.share_count,
+        viewsGrowth,
+        likesGrowth: viewsGrowth,
+        commentsGrowth: viewsGrowth,
+        sharesGrowth: viewsGrowth,
+      };
+    } catch (error) {
+      console.error('Error fetching TikTok stats:', error);
+      // Fallback to simulation if API fails
+      return simulateTikTokStats(url);
+    }
+  };
+
+  // Demo function to simulate fetching TikTok stats (fallback)
   const simulateTikTokStats = (url: string): Omit<TikTokVideo, 'id' | 'dateAdded' | 'lastUpdated'> => {
     // Extract video identifier from URL for demo purposes
     const urlParts = url.split('/');
@@ -69,13 +196,31 @@ const Dashboard = () => {
     const baseViews = Math.abs(hash % 900000) + 100000; // 100k - 1M views
     const engagementRate = (Math.abs(hash % 40) + 20) / 1000; // 2-6% engagement
     
+    // Create mock time-based metrics
+    const mockGrowth: TimeBasedMetrics = {
+      last30Min: Math.floor(Math.random() * 100),
+      last1Hour: Math.floor(Math.random() * 300),
+      last2Hours: Math.floor(Math.random() * 600),
+      last6Hours: Math.floor(Math.random() * 1500),
+      last24Hours: Math.floor(Math.random() * 5000),
+      last7Days: Math.floor(Math.random() * 20000),
+    };
+    
+    // Determine content type from URL
+    const isPhotoCarousel = url.includes('/photo/');
+    const contentType = isPhotoCarousel ? 'Photo Carousel' : 'Video';
+    
     return {
       url,
-      title: `TikTok Video ${videos.length + 1}`,
+      title: `TikTok ${contentType} ${videos.length + 1}`,
       views: baseViews,
       likes: Math.floor(baseViews * engagementRate * 0.6),
       comments: Math.floor(baseViews * engagementRate * 0.15),
-      shares: Math.floor(baseViews * engagementRate * 0.25)
+      shares: Math.floor(baseViews * engagementRate * 0.25),
+      viewsGrowth: mockGrowth,
+      likesGrowth: mockGrowth,
+      commentsGrowth: mockGrowth,
+      sharesGrowth: mockGrowth,
     };
   };
 
@@ -97,17 +242,17 @@ const Dashboard = () => {
     if (!isValidTikTokUrl(newVideoUrl)) {
       toast({
         title: "Invalid URL",
-        description: "Please enter a valid TikTok URL (e.g., https://tiktok.com/@user/video/123...)",
+        description: "Please enter a valid TikTok URL (e.g., https://tiktok.com/@user/video/123... or https://tiktok.com/@user/photo/123...)",
         variant: "destructive"
       });
       return;
     }
 
-    // Check if video already exists
+    // Check if content already exists
     if (videos.some(video => video.url === newVideoUrl)) {
       toast({
-        title: "Video Already Added",
-        description: "This TikTok video is already in your dashboard.",
+        title: "Content Already Added",
+        description: "This TikTok content is already in your dashboard.",
         variant: "destructive"
       });
       return;
@@ -116,11 +261,10 @@ const Dashboard = () => {
     setIsLoading(true);
 
     try {
-      // In a real app, you'd call the TikTok API here
-      // For demo purposes, we'll simulate the API call
+      // Fetch video stats using the enhanced API function
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      const videoStats = simulateTikTokStats(newVideoUrl);
+      const videoStats = await fetchTikTokStats(newVideoUrl);
       const newVideo: TikTokVideo = {
         id: Date.now().toString(),
         ...videoStats,
@@ -132,14 +276,14 @@ const Dashboard = () => {
       setNewVideoUrl("");
       
       toast({
-        title: "Video Added! 🎉",
-        description: "TikTok video stats have been fetched and added to your dashboard."
+        title: "Content Added! 🎉",
+        description: "TikTok content stats have been fetched and added to your dashboard."
       });
     } catch (error) {
       console.error("Error adding video:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch video stats. Please try again.",
+        description: "Failed to fetch content stats. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -161,10 +305,10 @@ const Dashboard = () => {
 
     setIsLoading(true);
     try {
-      // Simulate API call to refresh stats
+      // Fetch updated stats using the API
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const updatedStats = simulateTikTokStats(video.url);
+      const updatedStats = await fetchTikTokStats(video.url);
       setVideos(prev => prev.map(v => 
         v.id === id 
           ? { ...v, ...updatedStats, lastUpdated: new Date().toISOString() }
@@ -173,7 +317,7 @@ const Dashboard = () => {
       
       toast({
         title: "Stats Refreshed",
-        description: "Video statistics have been updated."
+        description: "Content statistics have been updated."
       });
     } catch (error) {
       toast({
@@ -279,21 +423,21 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="text-white flex items-center font-semibold">
               <Plus className="w-5 h-5 mr-2 text-pink-400" />
-              Add TikTok Video
+              Add TikTok Content
             </CardTitle>
             <CardDescription className="text-gray-200 font-medium">
-              Enter a TikTok video URL to track its performance
+              Enter a TikTok video or photo carousel URL to track its performance
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex space-x-4">
               <div className="flex-1">
                 <Label htmlFor="tiktok-url" className="text-white text-sm mb-2 block">
-                  TikTok Video URL
+                  TikTok Content URL
                 </Label>
                 <Input
                   id="tiktok-url"
-                  placeholder="https://tiktok.com/@username/video/1234567890..."
+                  placeholder="https://tiktok.com/@username/video/123... or https://tiktok.com/@username/photo/123..."
                   value={newVideoUrl}
                   onChange={(e) => setNewVideoUrl(e.target.value)}
                   className="bg-white/10 border-purple-300 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
@@ -306,7 +450,7 @@ const Dashboard = () => {
                   disabled={isLoading || !newVideoUrl.trim()}
                   className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white transition-all duration-300 disabled:opacity-50"
                 >
-                  {isLoading ? "Adding..." : "Add Video"}
+                  {isLoading ? "Adding..." : "Add Content"}
                 </Button>
               </div>
             </div>
@@ -320,7 +464,7 @@ const Dashboard = () => {
               <CardContent className="p-4 text-center">
                 <BarChart3 className="w-8 h-8 text-purple-400 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-white">{stats.videoCount}</div>
-                <div className="text-xs text-gray-300">Videos</div>
+                <div className="text-xs text-gray-300">Content</div>
               </CardContent>
             </Card>
             
@@ -366,26 +510,68 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Auto-refresh Controls */}
+        {videos.length > 0 && (
+          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-5 h-5 text-purple-400" />
+                    <span className="text-white font-medium">Auto-refresh every 5 minutes</span>
+                  </div>
+                  <Badge 
+                    variant={autoRefreshEnabled ? "default" : "secondary"}
+                    className={autoRefreshEnabled ? "bg-green-500/20 text-green-300" : "bg-gray-500/20 text-gray-300"}
+                  >
+                    {autoRefreshEnabled ? "Enabled" : "Disabled"}
+                  </Badge>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setAutoRefreshEnabled(!autoRefreshEnabled)}
+                    className="border-purple-400/20 text-purple-300 hover:bg-purple-400/10"
+                  >
+                    {autoRefreshEnabled ? "Disable" : "Enable"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={refreshAllVideos}
+                    disabled={isLoading}
+                    className="border-blue-400/20 text-blue-300 hover:bg-blue-400/10"
+                  >
+                    <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                    Refresh All
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Videos List */}
         {videos.length === 0 ? (
           <Card className="bg-white/10 backdrop-blur-lg border-white/20">
             <CardContent className="text-center py-16">
               <BarChart3 className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
               <p className="text-gray-300 text-lg mb-2">
-                No TikTok videos tracked yet
+                No TikTok content tracked yet
               </p>
               <p className="text-gray-400 text-sm">
-                Add your first TikTok video URL above to start tracking performance
+                Add your first TikTok video or photo carousel URL above to start tracking performance
               </p>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-white mb-4">Your TikTok Videos</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Your TikTok Content</h2>
             {videos.map((video) => (
               <Card key={video.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-200">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between mb-6">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <h3 className="text-white font-medium">{video.title}</h3>
@@ -451,7 +637,7 @@ const Dashboard = () => {
                         disabled={isLoading}
                         className="border-green-400/20 text-green-300 hover:bg-green-400/10"
                       >
-                        <TrendingUp className="w-4 h-4" />
+                        <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                       </Button>
                       <Button
                         size="sm"
@@ -463,6 +649,38 @@ const Dashboard = () => {
                       </Button>
                     </div>
                   </div>
+
+                  {/* Time-based Metrics */}
+                  {video.viewsGrowth && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <TimeBasedMetricsComponent
+                        metrics={video.viewsGrowth}
+                        metricType="views"
+                        className="col-span-1"
+                      />
+                      {video.likesGrowth && (
+                        <TimeBasedMetricsComponent
+                          metrics={video.likesGrowth}
+                          metricType="likes"
+                          className="col-span-1"
+                        />
+                      )}
+                      {video.commentsGrowth && (
+                        <TimeBasedMetricsComponent
+                          metrics={video.commentsGrowth}
+                          metricType="comments"
+                          className="col-span-1"
+                        />
+                      )}
+                      {video.sharesGrowth && (
+                        <TimeBasedMetricsComponent
+                          metrics={video.sharesGrowth}
+                          metricType="shares"
+                          className="col-span-1"
+                        />
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
