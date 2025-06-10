@@ -39,17 +39,17 @@ alwaysApply: false
 
 ### UI/Styling Issues
 
-#### Problem: Lovable branding still showing
-**Solution:**
-1. Check [src/index.css](mdc:src/index.css) for branding removal CSS
-2. Verify [src/main.tsx](mdc:src/main.tsx) branding removal JavaScript
-3. Try production build: `npm run build && npm run preview`
-
 #### Problem: Components not styled correctly
 **Solution:**
 1. Verify Tailwind classes are working
 2. Check [tailwind.config.ts](mdc:tailwind.config.ts) configuration
 3. Ensure glassmorphism classes: `backdrop-blur-xl bg-white/5`
+
+#### Problem: Language dropdown not working
+**Solution:**
+1. Check if native HTML select is rendering properly
+2. Verify languages array in [src/pages/Generate.tsx](mdc:src/pages/Generate.tsx)
+3. Test with different browsers
 
 ## Debugging Steps
 
@@ -69,7 +69,6 @@ alwaysApply: false
 1. Check for infinite re-renders in React DevTools
 2. Verify useEffect dependencies
 3. Monitor API call frequency
-4. Check for memory leaks in MutationObserver
 
 ## Development Environment
 
@@ -90,5 +89,5 @@ alwaysApply: false
 - [ ] All copy buttons functional
 - [ ] Engagement prediction calculating
 - [ ] Hook strength analysis working
-- [ ] No Lovable branding visible
+- [ ] Language dropdown working with all options
 - [ ] Responsive design working
