@@ -1,9 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Settings, BarChart3, ArrowRight, Zap, Target, TrendingUp } from "lucide-react";
+import { Sparkles, Settings, BarChart3, ArrowRight, Zap, Target, TrendingUp, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Index = () => {
+  const platforms = ["Instagram", "X/Twitter", "TikTok", "Reels", "YouTube Shorts", "LinkedIn"];
+  const [currentPlatform, setCurrentPlatform] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPlatform((prev) => (prev + 1) % platforms.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [platforms.length]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden">
       {/* Background Glass Orbs */}
@@ -21,31 +32,55 @@ const Index = () => {
         <div className="relative max-w-6xl mx-auto px-6 py-20 z-10">
           <div className="text-center space-y-8">
             <div className="space-y-4">
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent leading-tight drop-shadow-2xl">
-                Create Viral
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent leading-tight drop-shadow-2xl">
+                Create viral content for:
                 <br />
-                <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                  TikTok Content
+                <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
+                  {platforms[currentPlatform]}
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-lg">
-                AI-powered slideshow generator that creates scroll-stopping content with proven viral formats
+              <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-lg mb-4">
+                AI-powered slideshow generator for all social media platforms
               </p>
+              
+              {/* Free Tool Notice */}
+              <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-2xl p-6 max-w-2xl mx-auto backdrop-blur-sm mb-6">
+                <div className="flex items-center justify-center mb-3">
+                  <Heart className="w-6 h-6 text-green-400 mr-2" />
+                  <span className="text-green-200 font-bold text-lg">100% Free Tool</span>
+                </div>
+                <p className="text-white/90 text-center mb-4 font-medium">
+                  This tool is completely free! If it helps you create amazing content, consider following:
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                  <a 
+                    href="https://twitter.com/fildotai" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-200 px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 font-medium"
+                  >
+                    <span className="mr-2">🐦</span>
+                    @fildotai on Twitter
+                  </a>
+                  <a 
+                    href="https://tiktok.com/@triple_fil" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-200 px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 font-medium"
+                  >
+                    <span className="mr-2">🎵</span>
+                    @triple_fil on TikTok
+                  </a>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex justify-center">
               <Link to="/generate">
                 <Button size="lg" className="bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-600/90 hover:to-purple-600/90 text-white text-lg px-8 py-6 transition-all duration-300 hover:scale-105 shadow-2xl border-0 font-semibold rounded-xl backdrop-blur-sm">
                   <Sparkles className="w-6 h-6 mr-2" />
                   Start Creating
                   <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              
-              <Link to="/dashboard">
-                <Button size="lg" variant="outline" className="border-white/20 text-white hover:text-gray-900 transition-all duration-300 bg-white/10 hover:bg-white/90 backdrop-blur-sm text-lg px-8 py-6 font-semibold shadow-lg rounded-xl hover:scale-105">
-                  <BarChart3 className="w-6 h-6 mr-2" />
-                  View Dashboard
                 </Button>
               </Link>
             </div>
@@ -71,7 +106,7 @@ const Index = () => {
             </div>
             <h3 className="text-white text-xl font-bold mb-3">AI Content Generation</h3>
             <p className="text-white/70 font-medium mb-4">
-              Create scroll-stopping hooks and engaging slideshows with proven viral formats
+              Create scroll-stopping hooks and engaging slideshows for all social media platforms
             </p>
             <ul className="space-y-3 text-white/60">
               <li className="flex items-center">
@@ -93,22 +128,22 @@ const Index = () => {
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500/80 to-cyan-500/80 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg backdrop-blur-sm">
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-white text-xl font-bold mb-3">Content Tracking</h3>
+            <h3 className="text-white text-xl font-bold mb-3">Smart Optimization</h3>
             <p className="text-white/70 font-medium mb-4">
-              Keep track of your TikTok content performance with simple manual tracking
+              AI-powered analysis and optimization for maximum engagement across platforms
             </p>
             <ul className="space-y-3 text-white/60">
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
-                Manual metrics input
+                Hook strength analysis
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
-                Engagement rate calculation
+                Engagement prediction
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
-                Content organization
+                Platform-specific tips
               </li>
             </ul>
           </div>
@@ -117,22 +152,22 @@ const Index = () => {
             <div className="w-12 h-12 bg-gradient-to-r from-green-500/80 to-emerald-500/80 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg backdrop-blur-sm">
               <Target className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-white text-xl font-bold mb-3">Smart Optimization</h3>
+            <h3 className="text-white text-xl font-bold mb-3">Multi-Platform Export</h3>
             <p className="text-white/70 font-medium mb-4">
-              Get suggestions for visual content and optimize your posting strategy
+              Export your content in formats optimized for different social media platforms
             </p>
             <ul className="space-y-3 text-white/60">
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></div>
-                Image search terms
+                Instagram & Reels format
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></div>
-                Content length optimization
+                Twitter thread format
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></div>
-                Engagement insights
+                TikTok & YouTube Shorts
               </li>
             </ul>
           </div>
@@ -146,7 +181,7 @@ const Index = () => {
             Ready to Create Viral Content?
           </h3>
           <p className="text-white/80 text-lg mb-8 font-medium drop-shadow-md">
-            Join thousands of creators using AI to generate engaging TikTok content
+            Join thousands of creators using AI to generate engaging content for all social platforms
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/generate">

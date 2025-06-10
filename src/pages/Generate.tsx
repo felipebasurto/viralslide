@@ -149,7 +149,7 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 
   const formatInstruction = formatId === "custom" && customFormat ? 
     `Create content using this CUSTOM FORMAT: ${customFormat}` : 
-    `Create ${isOrganic ? 'educational' : 'viral'} TikTok slideshow content in "${formatInfo?.title}" format`;
+    `Create ${isOrganic ? 'educational' : 'viral'} slideshow content in "${formatInfo?.title}" format for social media platforms`;
 
   const contentRequirements = isOrganic ? `
 STRUCTURE REQUIRED:
@@ -631,47 +631,137 @@ const Generate = () => {
               </div>
             </div>
 
-            {/* Generate Button with Progress */}
-            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl">
+            {/* Generate Button */}
+            <div className="backdrop-blur-xl bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/30 rounded-2xl p-6 shadow-2xl">
+              <div className="mb-4">
+                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
+                  <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
+                  Generate Content
+                </h3>
+                <p className="text-white/70 text-sm font-medium">
+                  Debug: Format={selectedFormat}, Custom={customFormat.slice(0, 20)}..., Disabled={!selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}, {contentMode === "organic" ? "Organic" : "Viral"}
+                </p>
+              </div>
+              
+              {/* Quick Start Templates */}
+              {!selectedFormat && (
+                <div className="mb-6 p-4 bg-blue-500/10 border border-blue-400/30 rounded-xl">
+                  <h4 className="text-blue-200 font-medium mb-3 flex items-center">
+                    ⚡ Quick Start Templates
+                  </h4>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedFormat("top5tips");
+                        setCustomTopic("productivity hacks");
+                      }}
+                      className="text-left p-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-400/20 rounded-lg transition-all duration-200 hover:scale-102"
+                    >
+                      <div className="text-blue-200 font-medium text-sm">🔥 Productivity Tips</div>
+                      <div className="text-blue-300/70 text-xs">Top 5 productivity hacks that changed my life</div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedFormat("commonerrors");
+                        setCustomTopic("social media mistakes");
+                      }}
+                      className="text-left p-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-400/20 rounded-lg transition-all duration-200 hover:scale-102"
+                    >
+                      <div className="text-blue-200 font-medium text-sm">⚠️ Common Mistakes</div>
+                      <div className="text-blue-300/70 text-xs">Social media mistakes killing your growth</div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedFormat("beforeafter");
+                        setCustomTopic("morning routine transformation");
+                      }}
+                      className="text-left p-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-400/20 rounded-lg transition-all duration-200 hover:scale-102"
+                    >
+                      <div className="text-blue-200 font-medium text-sm">✨ Transformation</div>
+                      <div className="text-blue-300/70 text-xs">My morning routine before vs after</div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Platform-Specific Tips */}
+              {selectedFormat && (
+                <div className="mb-6 p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
+                  <h4 className="text-purple-200 font-medium mb-3 flex items-center">
+                    💡 Platform Tips for {selectedFormatInfo?.title}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div className="bg-pink-500/10 border border-pink-400/20 rounded-lg p-3">
+                      <div className="text-pink-200 font-medium mb-1">📱 Instagram/Reels</div>
+                      <div className="text-pink-300/70">Use trending audio, vertical format, hook in first 3 seconds</div>
+                    </div>
+                    <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-3">
+                      <div className="text-blue-200 font-medium mb-1">🐦 X/Twitter</div>
+                      <div className="text-blue-300/70">Thread format works best, engage with replies quickly</div>
+                    </div>
+                    <div className="bg-cyan-500/10 border border-cyan-400/20 rounded-lg p-3">
+                      <div className="text-cyan-200 font-medium mb-1">🎵 TikTok</div>
+                      <div className="text-cyan-300/70">Fast-paced, trending sounds, clear text overlays</div>
+                    </div>
+                    <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-3">
+                      <div className="text-green-200 font-medium mb-1">📺 YouTube Shorts</div>
+                      <div className="text-green-300/70">Strong thumbnail, clear narration, end screen CTA</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Content Length Estimator */}
+              {selectedFormat && (
+                <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-400/30 rounded-xl">
+                  <h4 className="text-yellow-200 font-medium mb-3 flex items-center">
+                    📏 Estimated Content Length
+                  </h4>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-yellow-200 font-bold text-lg">7</div>
+                      <div className="text-yellow-300/70 text-xs">Total Slides</div>
+                    </div>
+                    <div>
+                      <div className="text-yellow-200 font-bold text-lg">~21s</div>
+                      <div className="text-yellow-300/70 text-xs">View Time</div>
+                    </div>
+                    <div>
+                      <div className="text-yellow-200 font-bold text-lg">~350</div>
+                      <div className="text-yellow-300/70 text-xs">Total Chars</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <Button
                 onClick={handleGenerate}
-                disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}
-                className="w-full bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-600/90 hover:to-purple-600/90 text-white py-6 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-0 shadow-2xl rounded-xl backdrop-blur-sm"
+                disabled={!selectedFormat || (selectedFormat === "custom" && !customFormat.trim()) || isGenerating}
+                className="w-full bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-600/90 hover:to-purple-600/90 disabled:from-gray-500/50 disabled:to-gray-600/50 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 shadow-xl border-0 backdrop-blur-sm text-lg"
               >
                 {isGenerating ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Creating {contentMode === "organic" ? "Organic" : "Viral"} Content...
-                  </>
+                  <div className="flex items-center space-x-3">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>{currentStage || "Generating..."}</span>
+                    <span className="text-sm opacity-75">({estimatedTime}s)</span>
+                  </div>
                 ) : (
-                  <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Generate {contentMode === "organic" ? "Organic" : "Viral"} Content
-                  </>
+                  <div className="flex items-center justify-center space-x-2">
+                    <Sparkles className="w-5 h-5" />
+                    <span>Generate {contentMode === "organic" ? "Organic" : "Viral"} Content</span>
+                  </div>
                 )}
               </Button>
 
-              {/* Debug Information */}
-              <div className="mt-2 text-xs text-white/50 text-center backdrop-blur-sm">
-                Debug: Format={selectedFormat}, Custom={customFormat}, Disabled={isGenerating || !selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}, Organic={contentMode === "organic"}
-              </div>
-
+              {/* Progress Bar */}
               {isGenerating && (
-                <div className="mt-6 space-y-4">
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
-                    <Progress value={generationProgress} className="h-3 bg-white/20 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-500 ease-out rounded-full" style={{width: `${generationProgress}%`}}></div>
-                    </Progress>
-                    <div className="flex items-center justify-between text-sm mt-3">
-                      <span className="text-white/80 flex items-center font-medium">
-                        <Loader2 className="w-3 h-3 mr-2 animate-spin" />
-                        {currentStage}
-                      </span>
-                      <span className="text-white/60 flex items-center font-medium">
-                        <Clock className="w-3 h-3 mr-1" />
-                        ~{estimatedTime}s remaining
-                      </span>
-                    </div>
+                <div className="mt-4">
+                  <Progress value={generationProgress} className="h-3 bg-white/20 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-300 rounded-full" style={{width: `${generationProgress}%`}}></div>
+                  </Progress>
+                  <div className="flex justify-between text-xs text-white/60 mt-2">
+                    <span>{currentStage}</span>
+                    <span>{generationProgress}% complete</span>
                   </div>
                 </div>
               )}
@@ -679,30 +769,35 @@ const Generate = () => {
           </div>
 
           {/* Results Panel */}
-          <div>
-            {generatedContent ? (
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2 mb-4 backdrop-blur-xl bg-green-500/10 border border-green-400/30 rounded-xl p-3">
-                  <CheckCircle className="w-5 h-5 text-green-400" />
-                  <span className="text-green-200 font-semibold">Content generated successfully!</span>
-                </div>
-                <ContentResult 
-                  content={generatedContent} 
-                  onHookSelectionChange={handleHookSelectionChange}
-                />
-              </div>
-            ) : (
-              <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-16 shadow-2xl h-full flex items-center justify-center">
-                <div className="text-center">
-                  <Sparkles className="w-16 h-16 text-purple-400/60 mx-auto mb-4" />
-                  <p className="text-white/80 text-lg mb-2 font-medium">
-                    Select a format and generate content
-                  </p>
-                  <p className="text-white/60 text-sm font-medium">
-                    Choose from proven formats that drive engagement
-                  </p>
+          <div className="space-y-6">
+            {/* Content Preview/Examples */}
+            {!generatedContent && (
+              <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl">
+                <h3 className="text-white font-semibold text-lg mb-4 flex items-center">
+                  👁️ Content Preview
+                </h3>
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-xl p-4 border border-pink-400/30">
+                    <div className="text-pink-200 font-medium text-sm mb-2">🔥 Hook Example (Viral Mode)</div>
+                    <div className="text-white/80 text-sm italic">"what if I told you there's a simple way to double your productivity in just 5 minutes?"</div>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-400/30">
+                    <div className="text-green-200 font-medium text-sm mb-2">🌱 Hook Example (Organic Mode)</div>
+                    <div className="text-white/80 text-sm italic">"today I want to share 5 productivity techniques that genuinely changed how I work"</div>
+                  </div>
+                  <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl p-4 border border-blue-400/30">
+                    <div className="text-blue-200 font-medium text-sm mb-2">📱 Multi-Platform Ready</div>
+                    <div className="text-white/80 text-sm">Your content will be optimized for Instagram, TikTok, Twitter, YouTube Shorts, and more!</div>
+                  </div>
                 </div>
               </div>
+            )}
+
+            {generatedContent && (
+              <ContentResult 
+                content={generatedContent} 
+                onHookSelectionChange={handleHookSelectionChange}
+              />
             )}
           </div>
         </div>
