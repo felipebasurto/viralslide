@@ -78,6 +78,18 @@ const languages = [{
 }, {
   code: "es",
   name: "Español"
+}, {
+  code: "pt",
+  name: "Português"
+}, {
+  code: "fr",
+  name: "Français"
+}, {
+  code: "de",
+  name: "Deutsch"
+}, {
+  code: "it",
+  name: "Italiano"
 }];
 
 const topicSuggestions = {
@@ -100,11 +112,24 @@ async function fetchGeneratedContent(apiKey: string, systemPrompt: string, forma
   
   onProgress?.(isOrganic ? "Preparing educational content strategy..." : "Preparing viral content strategy...");
   
-  const languageInstruction = language === "es" ? "Respond in Spanish. All content should be in Spanish." : "Respond in English. All content should be in English.";
+  const getLanguageInstruction = (lang: string) => {
+    switch (lang) {
+      case "es": return "Respond in Spanish. All content should be in Spanish.";
+      case "pt": return "Respond in Portuguese. All content should be in Portuguese.";
+      case "fr": return "Respond in French. All content should be in French.";
+      case "de": return "Respond in German. All content should be in German.";
+      case "it": return "Respond in Italian. All content should be in Italian.";
+      default: return "Respond in English. All content should be in English.";
+    }
+  };
+  const languageInstruction = getLanguageInstruction(language);
   
   // Different hook examples based on content mode
-  const hookExamples = isOrganic ? 
-    (language === "es" ? `
+  const getHookExamples = (lang: string, isOrganic: boolean) => {
+    if (isOrganic) {
+      switch (lang) {
+        case "es":
+          return `
 EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
 - "hoy quiero compartir contigo [TEMA]"
 - "esto es lo que he aprendido sobre [TEMA]"  
@@ -112,7 +137,19 @@ EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
 - "en mi experiencia con [TEMA]..."
 - "una cosa que me ayudó mucho con [PROBLEMA]"
 - "te comparto lo que funciona para [OBJETIVO]"
-` : `
+`;
+        case "pt":
+          return `
+EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
+- "hoje quero compartilhar com você [TÓPICO]"
+- "isso é o que aprendi sobre [TÓPICO]"
+- "deixe-me explicar [CONCEITO]"
+- "na minha experiência com [TÓPICO]..."
+- "uma coisa que me ajudou muito com [PROBLEMA]"
+- "vou compartilhar o que funciona para [OBJETIVO]"
+`;
+        default:
+          return `
 EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
 - "let me share what I've learned about [TOPIC]"
 - "here's what helped me with [PROBLEM]"
@@ -120,8 +157,12 @@ EXAMPLES OF ORGANIC/EDUCATIONAL HOOKS (for natural learning):
 - "something that really worked for me with [GOAL]"
 - "I want to talk about [TOPIC] today"
 - "let me explain [CONCEPT] in simple terms"
-`) : 
-    (language === "es" ? `
+`;
+      }
+    } else {
+      switch (lang) {
+        case "es":
+          return `
 EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "¿sabías que hay una forma sencilla de conseguir [RESULTADO]?"
 - "deja de desplazarte si quieres descubrir [SECRETO]"
@@ -133,7 +174,22 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "¿te has preguntado alguna vez por qué [PROBLEMA]?"
 - "nadie te lo ha dicho todavía pero [VERDAD]"
 - "¿estás cansado de [PROBLEMA]? entonces prueba esto"
-` : `
+`;
+        case "pt":
+          return `
+EXAMPLES OF VIRAL HOOKS (use as inspiration):
+- "e se eu te dissesse que há uma forma simples de conseguir [RESULTADO]?"
+- "pare de rolar se quiser descobrir [SEGREDO]"
+- "imagine se você pudesse [RESULTADO DESEJADO]"
+- "por que ninguém fala sobre [TÓPICO]?"
+- "isso vai mudar como você vê [TÓPICO]"
+- "tudo que você sabia sobre [TÓPICO] está 100% errado"
+- "você já se perguntou por que [PROBLEMA]?"
+- "ninguém te contou isso ainda, mas [VERDADE]"
+- "está cansado de [PROBLEMA]? então tente isso"
+`;
+        default:
+          return `
 EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "what if I told you there's a simple way to achieve [RESULT]?"
 - "stop scrolling if you want to discover [SECRET]"
@@ -145,7 +201,11 @@ EXAMPLES OF VIRAL HOOKS (use as inspiration):
 - "nobody told you this yet but [TRUTH]"
 - "are you tired of [PROBLEM]? then try this"
 - "here's why 99% of [AUDIENCE] fail at [TOPIC]"
-`);
+`;
+      }
+    }
+  };
+  const hookExamples = getHookExamples(language, isOrganic);
 
   const formatInstruction = formatId === "custom" && customFormat ? 
     `Create content using this CUSTOM FORMAT: ${customFormat}` : 
@@ -558,18 +618,17 @@ const Generate = () => {
                   <Globe className="w-4 h-4 mr-2 text-pink-400" />
                   Language
                 </div>
-                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white backdrop-blur-sm rounded-xl h-12 hover:bg-white/15 transition-all duration-200">
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20 rounded-xl">
-                    {languages.map(lang => (
-                      <SelectItem key={lang.code} value={lang.code} className="text-white hover:bg-white/10">
-                        {lang.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <select 
+                  value={selectedLanguage} 
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className="w-full bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-xl h-12 px-3 hover:bg-white/15 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                >
+                  {languages.map(lang => (
+                    <option key={lang.code} value={lang.code} className="bg-gray-800 text-white">
+                      {lang.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
