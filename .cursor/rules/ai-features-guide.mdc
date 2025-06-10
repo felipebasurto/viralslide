@@ -1,0 +1,73 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# AI Features Implementation Guide
+
+## Hook Variations System
+
+### Implementation Location
+- **Generation**: [src/pages/Generate.tsx](mdc:src/pages/Generate.tsx) lines 195-210
+- **Display**: [src/components/ContentResult.tsx](mdc:src/components/ContentResult.tsx) lines 390-430
+- **Interface**: `GeneratedContent.hookVariations: string[]`
+
+### How It Works
+1. API prompt explicitly requests 3 hook variations
+2. Fallback system generates variations if API returns fewer than 3
+3. UI shows placeholders for missing variations with "Generating..." text
+4. Users can click to select between hook options
+
+## Engagement Prediction Algorithm
+
+### Location
+- **Function**: [src/components/ContentResult.tsx](mdc:src/components/ContentResult.tsx) lines 203-238
+- **Calculation**: `calculateEngagementPrediction()`
+
+### Scoring Factors
+- Hook strength score (primary factor)
+- Slide count optimization (5 slides = optimal)
+- Average slide length (30-80 chars optimal)
+- CTA quality (40-100 chars optimal)
+- Returns percentage with color-coded level
+
+## Hook Strength Analysis
+
+### Location
+- **Function**: [src/components/ContentResult.tsx](mdc:src/components/ContentResult.tsx) lines 154-201
+- **Calculation**: `calculateHookStrength(hook: string)`
+
+### Analysis Criteria
+- **Psychological Triggers**: "what if", "secret", "mistake", etc. (+2 points each)
+- **Length Optimization**: 60-120 characters optimal (+2 points)
+- **Emotional Words**: "amazing", "shocking", etc. (+1 point)
+- **Numbers**: Presence of digits for credibility (+1 point)
+- **Max Score**: 10 points with detailed feedback
+
+## Export Formats
+
+### Available Formats
+1. **Hook Only** - Just the selected hook
+2. **Slides Only** - Content without hook/CTA
+3. **Instagram Format** - With emojis and hashtags
+4. **Twitter Thread** - Numbered thread format
+5. **Copy All** - Complete content
+
+### Implementation
+- **Functions**: [src/components/ContentResult.tsx](mdc:src/components/ContentResult.tsx) lines 64-101
+- **UI**: Prominent export section with 5 buttons
+- **Clipboard API**: Uses navigator.clipboard with fallback
+
+## Content Generation Flow
+
+### API Call Structure
+1. **Prompt Building**: Dynamic based on viral/organic mode
+2. **Progress Updates**: 5-stage progress with time estimates
+3. **JSON Parsing**: Robust extraction with error handling
+4. **Validation**: Ensures all required fields present
+5. **Fallback Generation**: Creates missing hook variations
+
+### Error Handling
+- No fallback content - shows proper error messages
+- API key validation before generation
+- JSON parsing with detailed error logging
