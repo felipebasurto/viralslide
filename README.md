@@ -4,7 +4,9 @@
 
 Create scroll-stopping, viral TikTok content with proven formats and AI-generated hooks that drive engagement.
 
-![ViralSlide Preview](https://via.placeholder.com/800x400/6366f1/ffffff?text=ViralSlide+Preview)
+![viralslide lovable app_(iPad Pro)](https://github.com/user-attachments/assets/17c37a1c-7c80-4fbf-bc4f-2f8f0d40da8a)
+![viralslide lovable app_generate(iPad Pro)](https://github.com/user-attachments/assets/8faadfa2-9668-43c3-ba6e-f6b1e0156128)
+
 
 ## ✨ Features
 
