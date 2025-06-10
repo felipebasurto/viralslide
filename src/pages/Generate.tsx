@@ -31,45 +31,45 @@ interface GeneratedContent {
 const viralFormats = [{
   id: "top5tips",
   title: "Top 5 Tips",
-  description: "Share your best 5 tips about your niche",
+  description: "Share your best tips about something you know well",
   emoji: "🔥",
-  example: "5 morning habits that changed my life"
+  example: "morning habits that changed my life"
 }, {
   id: "commonerrors",
   title: "Common Errors",
-  description: "Highlight mistakes people make in your field",
+  description: "Call out mistakes people make in your field",
   emoji: "⚠️",
   example: "mistakes killing your productivity"
 }, {
   id: "recommendations",
   title: "Recommendations",
-  description: "Recommend tools, products, or strategies",
+  description: "Recommend tools, products, or strategies that work",
   emoji: "⭐",
-  example: "tools every entrepreneur needs"
+  example: "tools every entrepreneur actually needs"
 }, {
   id: "beforeafter",
   title: "Before vs After",
-  description: "Show transformation or improvement",
+  description: "Show a transformation or improvement story",
   emoji: "✨",
-  example: "my morning routine transformation"
+  example: "how I transformed my morning routine"
 }, {
   id: "myths",
   title: "Myths vs Facts",
-  description: "Debunk common misconceptions",
+  description: "Debunk common misconceptions in your niche",
   emoji: "💡",
-  example: "productivity myths debunked"
+  example: "productivity myths that need to die"
 }, {
   id: "beginner",
   title: "Beginner's Guide",
-  description: "Essential steps for newcomers",
+  description: "Essential first steps for newcomers",
   emoji: "🎯",
-  example: "getting started with meditation"
+  example: "meditation for complete beginners"
 }, {
   id: "custom",
   title: "Custom Format",
-  description: "Create your own unique format",
+  description: "Create your own unique viral format",
   emoji: "🎨",
-  example: "your custom viral format"
+  example: "propaganda I'm not falling for"
 }];
 
 const languages = [{
@@ -501,76 +501,76 @@ const Generate = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Generation Panel */}
           <div className="space-y-6">
-            {/* Content Mode Selection */}
+            {/* Content Settings - Combined Mode & Language */}
             <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
-              <div className="mb-4">
+              <div className="mb-6">
                 <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
-                  Content Mode
+                  Content Settings
                 </h3>
                 <p className="text-white/70 text-sm font-medium">
-                  Choose between viral engagement or organic education
+                  Choose your content mode and language
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => setContentMode("viral")}
-                  className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
-                    contentMode === "viral"
-                      ? "bg-gradient-to-r from-pink-500/30 to-purple-500/30 border-pink-400/40 shadow-lg scale-105"
-                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">🔥</span>
-                    <div className="flex-1 text-left">
-                      <div className="font-medium text-white">Viral Content</div>
-                      <div className="text-xs text-white/70 mt-1">Engaging hooks and viral formats</div>
+              
+              {/* Content Mode Selection */}
+              <div className="mb-6">
+                <div className="text-white text-sm mb-3 font-medium">Content Mode</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setContentMode("viral")}
+                    className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
+                      contentMode === "viral"
+                        ? "bg-gradient-to-r from-pink-500/30 to-purple-500/30 border-pink-400/40 shadow-lg scale-105"
+                        : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-2xl">🔥</span>
+                      <div className="flex-1 text-left">
+                        <div className="font-medium text-white">Viral Content</div>
+                        <div className="text-xs text-white/70 mt-1">Attention-grabbing hooks</div>
+                      </div>
                     </div>
-                  </div>
-                </button>
-                <button
-                  onClick={() => setContentMode("organic")}
-                  className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
-                    contentMode === "organic"
-                      ? "bg-gradient-to-r from-green-500/30 to-emerald-500/30 border-green-400/40 shadow-lg scale-105"
-                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">🌱</span>
-                    <div className="flex-1 text-left">
-                      <div className="font-medium text-white">Organic Content</div>
-                      <div className="text-xs text-white/70 mt-1">Pure educational value, no promotion</div>
+                  </button>
+                  <button
+                    onClick={() => setContentMode("organic")}
+                    className={`p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
+                      contentMode === "organic"
+                        ? "bg-gradient-to-r from-green-500/30 to-emerald-500/30 border-green-400/40 shadow-lg scale-105"
+                        : "bg-white/5 border-white/10 hover:bg-white/10 hover:scale-102"
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-2xl">🌱</span>
+                      <div className="flex-1 text-left">
+                        <div className="font-medium text-white">Organic Content</div>
+                        <div className="text-xs text-white/70 mt-1">Educational & authentic</div>
+                      </div>
                     </div>
-                  </div>
-                </button>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Language Selection */}
-            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
-              <div className="mb-4">
-                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
-                  <Globe className="w-5 h-5 mr-2 text-pink-400" />
+              {/* Language Selection */}
+              <div>
+                <div className="text-white text-sm mb-3 font-medium flex items-center">
+                  <Globe className="w-4 h-4 mr-2 text-pink-400" />
                   Language
-                </h3>
-                <p className="text-white/70 text-sm font-medium">
-                  Choose your content language
-                </p>
+                </div>
+                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white backdrop-blur-sm rounded-xl h-12 hover:bg-white/15 transition-all duration-200">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20 rounded-xl">
+                    {languages.map(lang => (
+                      <SelectItem key={lang.code} value={lang.code} className="text-white hover:bg-white/10">
+                        {lang.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white backdrop-blur-sm rounded-xl h-12 hover:bg-white/15 transition-all duration-200">
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-900/95 backdrop-blur-xl border-white/20 rounded-xl">
-                  {languages.map(lang => (
-                    <SelectItem key={lang.code} value={lang.code} className="text-white hover:bg-white/10">
-                      {lang.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             {/* Format Selection */}
@@ -582,7 +582,7 @@ const Generate = () => {
                   <Info className="w-4 h-4 ml-2 text-white/50" />
                 </h3>
                 <p className="text-white/70 text-sm font-medium">
-                  Select a proven format for your content
+                  Pick a format that works for your content
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-3">
@@ -601,7 +601,7 @@ const Generate = () => {
                       <div className="flex-1">
                         <div className="font-medium text-white">{format.title}</div>
                         <div className="text-xs text-white/70 mt-1">{format.description}</div>
-                        <div className="text-xs italic text-white/50 mt-1">e.g. "{format.example}"</div>
+                        <div className="text-xs italic text-white/50 mt-1">"{format.example}"</div>
                       </div>
                     </div>
                   </button>
@@ -617,11 +617,11 @@ const Generate = () => {
                     🎨 Custom Format Description
                   </h3>
                   <p className="text-purple-200/80 text-sm font-medium">
-                    Describe your unique format in detail
+                    Tell us about your custom format idea
                   </p>
                 </div>
                 <Input
-                  placeholder="e.g., 'Start with a shocking statistic, then reveal 3 counterintuitive strategies, end with a personal story'"
+                  placeholder="Start with a shocking statistic, then reveal 3 counterintuitive strategies, end with a personal story"
                   value={customFormat}
                   onChange={(e) => setCustomFormat(e.target.value)}
                   className="bg-white/10 border-purple-300/30 text-white placeholder:text-white/50 focus:border-purple-400/60 rounded-xl h-12 backdrop-blur-sm"
@@ -629,31 +629,37 @@ const Generate = () => {
               </div>
             )}
 
-            {/* Custom Topic with Suggestions */}
-            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300">
-              <div className="mb-4">
-                <h3 className="text-white font-semibold text-lg mb-2">Custom Topic</h3>
+            {/* Content Generation - Combined Topic, Templates & Generate */}
+            <div className="backdrop-blur-xl bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/30 rounded-2xl p-6 shadow-2xl">
+              <div className="mb-6">
+                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
+                  <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
+                  Generate Content
+                </h3>
                 <p className="text-white/70 text-sm font-medium">
-                  Optional: Specify a particular angle or topic
+                  Add a custom topic or use quick templates to get started
                 </p>
               </div>
-              <div className="space-y-4">
+              
+              {/* Custom Topic */}
+              <div className="mb-6">
+                <div className="text-white text-sm mb-3 font-medium">Custom Topic (Optional)</div>
                 <Input
-                  placeholder="e.g., morning routines, productivity..."
+                  placeholder="morning routines, productivity tips, etc."
                   value={customTopic}
                   onChange={(e) => setCustomTopic(e.target.value)}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-purple-400/60 rounded-xl h-12 backdrop-blur-sm"
                 />
                 
                 {selectedFormat && topicSuggestions[selectedFormat as keyof typeof topicSuggestions] && (
-                  <div>
-                    <div className="text-white text-sm mb-2 font-medium">Popular topics for {selectedFormatInfo?.title}:</div>
+                  <div className="mt-3">
+                    <div className="text-white/70 text-xs mb-2 font-medium">Popular topics:</div>
                     <div className="flex flex-wrap gap-2">
                       {topicSuggestions[selectedFormat as keyof typeof topicSuggestions].map(suggestion => (
                         <button
                           key={suggestion}
                           onClick={() => handleTopicSuggestion(suggestion)}
-                          className="bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 cursor-pointer transition-colors border border-purple-400/30 px-3 py-1 rounded-full text-sm backdrop-blur-sm hover:scale-105 duration-200"
+                          className="bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 cursor-pointer transition-colors border border-purple-400/30 px-3 py-1 rounded-full text-xs backdrop-blur-sm hover:scale-105 duration-200"
                         >
                           {suggestion}
                         </button>
@@ -661,19 +667,6 @@ const Generate = () => {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Generate Button */}
-            <div className="backdrop-blur-xl bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/30 rounded-2xl p-6 shadow-2xl">
-              <div className="mb-4">
-                <h3 className="text-white font-semibold text-lg mb-2 flex items-center">
-                  <Sparkles className="w-5 h-5 mr-2 text-pink-400" />
-                  Generate Content
-                </h3>
-                <p className="text-white/70 text-sm font-medium">
-                  Debug: Format={selectedFormat}, Custom={customFormat.slice(0, 20)}..., Disabled={!selectedFormat || (selectedFormat === "custom" && !customFormat.trim())}, {contentMode === "organic" ? "Organic" : "Viral"}
-                </p>
               </div>
               
               {/* Quick Start Templates */}
@@ -717,56 +710,7 @@ const Generate = () => {
                 </div>
               )}
 
-              {/* Platform-Specific Tips */}
-              {selectedFormat && (
-                <div className="mb-6 p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
-                  <h4 className="text-purple-200 font-medium mb-3 flex items-center">
-                    💡 Platform Tips for {selectedFormatInfo?.title}
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="bg-pink-500/10 border border-pink-400/20 rounded-lg p-3">
-                      <div className="text-pink-200 font-medium mb-1">📱 Instagram/Reels</div>
-                      <div className="text-pink-300/70">Use trending audio, vertical format, hook in first 3 seconds</div>
-                    </div>
-                    <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-3">
-                      <div className="text-blue-200 font-medium mb-1">🐦 X/Twitter</div>
-                      <div className="text-blue-300/70">Thread format works best, engage with replies quickly</div>
-                    </div>
-                    <div className="bg-cyan-500/10 border border-cyan-400/20 rounded-lg p-3">
-                      <div className="text-cyan-200 font-medium mb-1">🎵 TikTok</div>
-                      <div className="text-cyan-300/70">Fast-paced, trending sounds, clear text overlays</div>
-                    </div>
-                    <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-3">
-                      <div className="text-green-200 font-medium mb-1">📺 YouTube Shorts</div>
-                      <div className="text-green-300/70">Strong thumbnail, clear narration, end screen CTA</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Content Length Estimator */}
-              {selectedFormat && (
-                <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-400/30 rounded-xl">
-                  <h4 className="text-yellow-200 font-medium mb-3 flex items-center">
-                    📏 Estimated Content Length
-                  </h4>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <div className="text-yellow-200 font-bold text-lg">7</div>
-                      <div className="text-yellow-300/70 text-xs">Total Slides</div>
-                    </div>
-                    <div>
-                      <div className="text-yellow-200 font-bold text-lg">~21s</div>
-                      <div className="text-yellow-300/70 text-xs">View Time</div>
-                    </div>
-                    <div>
-                      <div className="text-yellow-200 font-bold text-lg">~350</div>
-                      <div className="text-yellow-300/70 text-xs">Total Chars</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
+              {/* Generate Button */}
               <Button
                 onClick={handleGenerate}
                 disabled={!selectedFormat || (selectedFormat === "custom" && !customFormat.trim()) || isGenerating}
