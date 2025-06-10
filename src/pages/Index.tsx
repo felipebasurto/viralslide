@@ -1,19 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Settings, BarChart3, ArrowRight, Zap, Target, TrendingUp, Heart } from "lucide-react";
+import { Sparkles, Settings, BarChart3, ArrowRight, Zap, Target, TrendingUp, Heart, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { TypingAnimation } from "@/components/TypingAnimation";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const platforms = ["Instagram", "X/Twitter", "TikTok", "Reels", "YouTube Shorts", "LinkedIn"];
-  const [currentPlatform, setCurrentPlatform] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPlatform((prev) => (prev + 1) % platforms.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [platforms.length]);
+  const { toast } = useToast();
+  
+  const checkApiSetup = () => {
+    const apiKey = localStorage.getItem("deepseek_api_key") || "";
+    const systemPrompt = localStorage.getItem("system_prompt") || "";
+    
+    if (!apiKey || !systemPrompt) {
+      toast({
+        title: "Setup Required",
+        description: "Please configure your API key and business information in Settings before generating content.",
+        variant: "destructive",
+        duration: 5000,
+      });
+      return false;
+    }
+    return true;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden">
@@ -35,9 +46,13 @@ const Index = () => {
               <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent leading-tight drop-shadow-2xl">
                 Create viral content for:
                 <br />
-                <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
-                  {platforms[currentPlatform]}
-                </span>
+                <TypingAnimation 
+                  words={platforms}
+                  className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent"
+                  typingSpeed={80}
+                  deletingSpeed={40}
+                  pauseDuration={1500}
+                />
               </h1>
               <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-lg mb-4">
                 AI-powered slideshow generator for all social media platforms
@@ -75,12 +90,23 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex justify-center">
-              <Link to="/generate">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link to="/generate" onClick={(e) => {
+                if (!checkApiSetup()) {
+                  e.preventDefault();
+                }
+              }}>
                 <Button size="lg" className="bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-600/90 hover:to-purple-600/90 text-white text-lg px-8 py-6 transition-all duration-300 hover:scale-105 shadow-2xl border-0 font-semibold rounded-xl backdrop-blur-sm">
                   <Sparkles className="w-6 h-6 mr-2" />
                   Start Creating
                   <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+              
+              <Link to="/settings">
+                <Button size="lg" variant="outline" className="border-orange-400/40 text-orange-200 hover:text-orange-900 transition-all duration-300 bg-orange-500/10 hover:bg-orange-400/90 text-lg px-6 py-6 font-semibold shadow-lg rounded-xl hover:scale-105">
+                  <Settings className="w-5 h-5 mr-2" />
+                  Setup API Key
                 </Button>
               </Link>
             </div>
@@ -184,7 +210,11 @@ const Index = () => {
             Join thousands of creators using AI to generate engaging content for all social platforms
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/generate">
+            <Link to="/generate" onClick={(e) => {
+              if (!checkApiSetup()) {
+                e.preventDefault();
+              }
+            }}>
               <Button size="lg" className="bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-600/90 hover:to-purple-600/90 text-white text-lg px-8 py-6 transition-all duration-300 hover:scale-105 shadow-xl border-0 font-semibold rounded-xl backdrop-blur-sm">
                 <Zap className="w-5 h-5 mr-2" />
                 Generate Content Now

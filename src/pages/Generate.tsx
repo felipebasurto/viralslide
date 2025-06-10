@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Globe, Info, Clock, CheckCircle, AlertCircle, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -298,7 +298,15 @@ const Generate = () => {
   const [generationProgress, setGenerationProgress] = useState<number>(0);
   const [currentStage, setCurrentStage] = useState<string>("");
   const [estimatedTime, setEstimatedTime] = useState<number>(0);
+  const [hasApiSetup, setHasApiSetup] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Check API setup on component mount
+  useEffect(() => {
+    const apiKey = localStorage.getItem("deepseek_api_key") || "";
+    const systemPrompt = localStorage.getItem("system_prompt") || "";
+    setHasApiSetup(!!apiKey && !!systemPrompt);
+  }, []);
 
   // Load saved preferences
   useEffect(() => {
@@ -463,6 +471,31 @@ const Generate = () => {
           </div>
         </div>
       </header>
+
+      {/* API Setup Warning */}
+      {!hasApiSetup && (
+        <div className="max-w-6xl mx-auto px-6 py-4 relative z-10">
+          <div className="backdrop-blur-xl bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-400/40 rounded-2xl p-6 shadow-2xl">
+            <div className="flex items-start space-x-4">
+              <AlertCircle className="w-6 h-6 text-orange-400 flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <h3 className="text-white font-semibold text-lg mb-2">
+                  API Setup Required
+                </h3>
+                <p className="text-white/80 mb-4 font-medium">
+                  You need to configure your Deepseek API key and business information before generating content.
+                </p>
+                <Link to="/settings">
+                  <Button className="bg-gradient-to-r from-orange-500/80 to-red-500/80 hover:from-orange-600/90 hover:to-red-600/90 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Configure Settings
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="max-w-6xl mx-auto px-6 py-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8">
