@@ -192,9 +192,10 @@ ${hookExamples}
 
 ${contentRequirements}
 
-IMPORTANT: Generate 3 different hook variations to give the user choice. Each hook should use different psychological triggers or angles.
+CRITICAL REQUIREMENT: You MUST generate exactly 3 different hook variations in the hookVariations array. This is essential for the user experience. Each hook should use different psychological triggers or angles.
 
-JSON format:
+RESPOND ONLY WITH VALID JSON - NO OTHER TEXT:
+
 {
   "title": "${isOrganic ? 'natural, authentic title about the topic' : 'authentic lowercase title that promises real value'}",
   "hookVariations": [
@@ -260,8 +261,22 @@ JSON format:
       console.error("Invalid JSON structure:", parsed);
       throw new Error("Response missing required fields (title, hookVariations, slides, cta, searchTerms)");
     }
+    
+    // Ensure we always have exactly 3 hook variations
+    const hookVariations = [...parsed.hookVariations];
+    while (hookVariations.length < 3) {
+      const baseHook = hookVariations[0] || "Check this out...";
+      const variations = [
+        baseHook.replace(/\b(what if|imagine|have you ever)\b/gi, "did you know"),
+        baseHook.replace(/\b(secret|hack|trick)\b/gi, "method"),
+        baseHook.replace(/\b(stop scrolling|attention)\b/gi, "listen up")
+      ];
+      hookVariations.push(variations[hookVariations.length - 1] || `${baseHook} (variation ${hookVariations.length + 1})`);
+    }
+    
     return {
       ...parsed,
+      hookVariations: hookVariations.slice(0, 3), // Ensure exactly 3
       selectedHookIndex: 0, // Default to first hook
       format: formatInfo?.title || formatId
     };
