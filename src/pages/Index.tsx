@@ -43,7 +43,16 @@ const Index = () => {
         <div className="relative max-w-6xl mx-auto px-6 py-20 z-10">
           <div className="text-center space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent leading-tight drop-shadow-2xl">
+              {/* Brand Title */}
+              <div className="mb-6">
+                <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent leading-tight drop-shadow-2xl mb-4">
+                  ViralSlide
+                </h1>
+                <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-400 mx-auto rounded-full"></div>
+              </div>
+              
+              {/* Subtitle */}
+              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent leading-tight drop-shadow-2xl">
                 Create viral content for:
                 <br />
                 <TypingAnimation 
@@ -53,7 +62,7 @@ const Index = () => {
                   deletingSpeed={40}
                   pauseDuration={1500}
                 />
-              </h1>
+              </h2>
               <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-lg mb-4">
                 AI-powered slideshow generator for all social media platforms
               </p>
