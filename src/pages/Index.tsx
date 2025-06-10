@@ -93,22 +93,22 @@ const Index = () => {
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500/80 to-cyan-500/80 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg backdrop-blur-sm">
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-white text-xl font-bold mb-3">Performance Tracking</h3>
+            <h3 className="text-white text-xl font-bold mb-3">Content Tracking</h3>
             <p className="text-white/70 font-medium mb-4">
-              Monitor your TikTok videos' performance with detailed analytics and insights
+              Keep track of your TikTok content performance with simple manual tracking
             </p>
             <ul className="space-y-3 text-white/60">
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
-                Views, likes, comments tracking
+                Manual metrics input
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
-                Engagement rate analysis
+                Engagement rate calculation
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
-                Performance comparisons
+                Content organization
               </li>
             </ul>
           </div>

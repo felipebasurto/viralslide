@@ -1,19 +1,15 @@
-# ViralSlide 🚀
+# ViralSlide 🔥
 
 **AI-Powered TikTok Slideshow Generator**
 
 Create scroll-stopping, viral TikTok content with proven formats and AI-generated hooks that drive engagement.
-
-![viralslide lovable app_(iPad Pro)](https://github.com/user-attachments/assets/17c37a1c-7c80-4fbf-bc4f-2f8f0d40da8a)
-![viralslide lovable app_generate(iPad Pro)](https://github.com/user-attachments/assets/8faadfa2-9668-43c3-ba6e-f6b1e0156128)
-
 
 ## ✨ Features
 
 - **🤖 AI Content Generation**: Powered by Deepseek AI to create compelling slideshow content
 - **📊 Multiple Viral Formats**: Top 5 Tips, Common Errors, Recommendations, Before/After, and more
 - **🌍 Multi-Language Support**: Generate content in English and Spanish
-- **📈 Performance Tracking**: Monitor your TikTok videos' views, likes, comments, and shares
+- **📈 Simple Content Tracking**: Manually track your TikTok videos' performance metrics
 - **🎨 Custom Formats**: Create your own unique viral content formats
 - **💡 Smart Optimization**: Get suggestions for visual content and engagement strategies
 - **📱 Responsive Design**: Beautiful, modern UI that works on all devices
@@ -76,10 +72,10 @@ Create scroll-stopping, viral TikTok content with proven formats and AI-generate
 
 ### Tracking Performance
 
-1. **Add TikTok URLs**: Paste your TikTok video links in the Dashboard
-2. **Monitor Metrics**: Track views, likes, comments, and shares
-3. **Analyze Performance**: See which content formats perform best
-4. **Optimize Strategy**: Use insights to improve future content
+1. **Add TikTok URLs**: Paste your TikTok video links in the Content Tracker
+2. **Manual Input**: Easily update metrics by clicking the edit button on any content
+3. **Track Progress**: Monitor views, likes, comments, and shares over time
+4. **Analyze Performance**: See which content formats perform best with engagement calculations
 
 ## 🎯 Viral Formats Available
 
@@ -104,7 +100,7 @@ viralslide/
 │   ├── pages/              # Route components
 │   │   ├── Index.tsx       # Landing page
 │   │   ├── Generate.tsx    # Content generation
-│   │   ├── Dashboard.tsx   # Performance tracking
+│   │   ├── Dashboard.tsx   # Content tracking
 │   │   └── Settings.tsx    # Configuration
 │   ├── App.tsx             # Main app component
 │   └── main.tsx            # App entry point
